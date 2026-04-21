@@ -1,4 +1,5 @@
 import styles from './AboutWindow.module.css'
+import { asset } from '../../utils/asset'
 
 const SKILLS = [
   'Python', 'Looker Studio', 'SQL', 'Google Analytics',
@@ -19,7 +20,7 @@ export default function AboutWindow() {
       {/* Header */}
       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', marginBottom: 12 }}>
         <img
-          src="/images/Profile1.png"
+          src={asset('images/Profile1.png')}
           alt="Nicolas Cardona"
           style={{ width: 100, height: 100, objectFit: 'cover', border: '2px solid #808080', flexShrink: 0 }}
         />

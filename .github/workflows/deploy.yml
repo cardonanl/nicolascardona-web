@@ -33,7 +33,8 @@ jobs:
       - run: npm run build
 
       # React Router SPA fix: GitHub Pages serves 404.html for unknown paths.
-      # Copying index.html lets the client-side router handle the route.
+      # The script encodes the full path into the query string so the main
+      # index.html can restore it before React Router initializes.
       - run: cp dist/index.html dist/404.html
 
       - uses: actions/upload-pages-artifact@v3
