@@ -1,0 +1,44 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.thumb {
+  margin: 0;
+  cursor: pointer;
+  border: 2px solid #808080;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  background: #c0c0c0;
+  overflow: hidden;
+}
+
+.thumb:hover {
+  outline: 2px dotted #000080;
+}
+
+.thumb img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.thumb figcaption {
+  font-size: 11px;
+  text-align: center;
+  padding: 4px 4px 5px;
+  background: #c0c0c0;
+}
+
+/* Full-screen overlay — rendered via portal so it escapes the zoom:1.35 window */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}

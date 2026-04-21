@@ -1,0 +1,29 @@
+.icon {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  cursor: pointer;
+  width: 72px;
+  text-decoration: none;
+  border: 1px dotted transparent;
+}
+
+.icon:hover,
+.icon:focus-visible {
+  border-color: white;
+  background-color: #000080;
+  outline: none;
+}
+
+.label {
+  color: white;
+  font-size: 12px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  text-align: center;
+  text-shadow: 1px 1px 0 black;
+  word-break: break-word;
+  line-height: 1.2;
+}
