@@ -67,8 +67,9 @@ Routes supported:
 
 **Visual art** — drop image in `public/images/art/`, add entry to `src/data/artwork.js`:
 ```js
-{ id: 5, src: '/images/art/filename.jpg', caption: 'Title', alt: 'Description' }
+{ id: 5, src: asset('images/art/filename.jpg'), caption: 'Title', alt: 'Description' }
 ```
+`asset()` is imported at the top of the file and prepends `import.meta.env.BASE_URL` automatically.
 
 **New paper/publication** — add entry to `src/data/papers.js`.
 
@@ -83,12 +84,11 @@ npm run preview   # preview production build
 
 ## Deployment
 
-Configured for **Netlify**. `public/_redirects` handles client-side routing:
-```
-/*  /index.html  200
-```
+Deployed to **GitHub Pages** via GitHub Actions (`.github/workflows/deploy.yml`).
 
-Push to `main` → Netlify builds and deploys automatically.
+Push to `master` → workflow builds, copies `index.html` → `404.html` (SPA routing fix), and deploys to Pages automatically.
+
+`public/_redirects` is kept for potential Netlify fallback but is not the active deploy target.
 
 ## Scaling approach
 
