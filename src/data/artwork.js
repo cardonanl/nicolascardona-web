@@ -15,14 +15,20 @@ export const artwork = [
   },
   {
     id: 3,
-    src: 'https://placekitten.com/202/200',
-    caption: 'Retro Console Mod',
-    alt: 'Retro console modification',
+    src: asset('images/art/G_nK-49WwAA4T2F.jpg'),
+    caption: 'Condoricosas en EOA 2',
+    alt: 'Condoricosas en EOA 2',
   },
   {
     id: 4,
-    src: 'https://placekitten.com/200/202',
-    caption: 'Street Art Photo',
-    alt: 'Street art photography',
+    src: asset('images/art/G_dImRzWYAExS_0.jpg'),
+    caption: 'CAD Isometric 2',
+    alt: 'Version SimCity',
+  },
+  {
+    id: 5,
+    src: asset('images/art/G_dyF_SW8AA4CG1.jpg'),
+    caption: 'Centro Cali Isometric',
+    alt: 'Version SimCity',
   },
 ]
