@@ -1,7 +1,12 @@
+import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getPostBySlug } from '../utils/loadPosts'
 
 export default function BlogPost() {
+  useEffect(() => {
+    document.body.style.overflow = 'auto'
+    return () => { document.body.style.overflow = '' }
+  }, [])
   const { slug } = useParams()
   const post = getPostBySlug(slug)
 
