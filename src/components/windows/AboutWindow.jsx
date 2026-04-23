@@ -3,9 +3,10 @@ import { asset } from '../../utils/asset'
 
 const SKILLS = [
   'Python', 'Looker Studio', 'SQL', 'Google Analytics',
-  'Excel / Spreadsheet', 'R', 'BigQuery', 'Power BI',
+  'Excel', 'R', 'BigQuery', 'Power BI',
   'Relaciones públicas', 'Asuntos públicos',
-  'Comunicaciones corporativas', 'Marketing electoral',
+  'Web Scraping', 'OSINT',
+  'Machine Learning', 'AI Agents', 'AI Integration',
 ]
 
 const LINKS = [
@@ -35,7 +36,7 @@ export default function AboutWindow() {
           <p style={{ margin: 0, fontSize: 13, color: '#555', fontStyle: 'italic' }}>
             I am a Colombian political scientist, analyst, and data scientist with over six years of
             experience. I have collaborated with diverse clients worldwide, integrating public affairs
-            with product design, data systems, and statistical information.
+            with product design, data systems, and statistical information. Currently, you can find me at MrBeast.
           </p>
         </div>
       </div>

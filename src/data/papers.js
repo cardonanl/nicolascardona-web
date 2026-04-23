@@ -5,7 +5,7 @@ export const papers = [
     title: 'Los Acuerdos y Marcos jurídicos para la finalización del conflicto armado: la reconstrucción parcial del Estado colombiano',
     venue: 'Revista Trans-pasando fronteras',
     date: '2016-01-01',
-    url: '#',
+    url: 'https://www.icesi.edu.co/revistas/index.php/trans-pasando_fronteras/article/view/2421',
   },
   {
     id: 2,
@@ -13,7 +13,7 @@ export const papers = [
     title: 'La extradición: una herramienta para el fortalecimiento de la imagen estatal colombiana durante las presidencias de Betancourt, Barco, Pastrana y Uribe',
     venue: 'Revista Trans-pasando fronteras',
     date: '2016-01-01',
-    url: '#',
+    url: 'https://www.icesi.edu.co/revistas/index.php/trans-pasando_fronteras/article/view/2385',
   },
   {
     id: 3,
@@ -21,7 +21,7 @@ export const papers = [
     title: 'El plebiscito colombiano y las encuestas: El doble fracaso del Sí',
     venue: 'Revista Campus Cultural No. 78',
     date: '2016-01-01',
-    url: '#',
+    url: 'https://revistacampuscultural.tec.mx/sites/g/files/vgjovo1461/files/Revista%2078.pdf',
   },
   {
     id: 4,
@@ -29,7 +29,7 @@ export const papers = [
     title: 'Bordando para no olvidar',
     venue: 'Papel de Colgadura Vol. 14',
     date: '2017-01-01',
-    url: '#',
+    url: 'https://www.icesi.edu.co/papeldecolgadura/numeros-anteriores/vol-14/cuestion-de-machos-vol14/bordando-para-no-olvidar.php',
   },
   {
     id: 5,
@@ -45,7 +45,7 @@ export const papers = [
     title: 'Análisis de regresión lineal y una propuesta de modelos logísticos multinomiales para el cálculo de probabilidades de víctimas y victimarios de hurtos en Bogotá entre el 2010-2019',
     venue: 'Fundación Universitaria Los Libertadores',
     date: '2020-01-01',
-    url: '#',
+    url: 'https://www.studocu.com/co/document/fundacion-universitaria-los-libertadores/metodos-estadisticos/el-hurto-en-colombia-y-bogota-analisis-de-regresion-lineal-y-logistico/29558397',
   },
   {
     id: 7,
@@ -53,7 +53,7 @@ export const papers = [
     title: 'Efectos del microtráfico sobre la violencia directa: Un análisis muestral comparado sobre las expresiones contemporáneas del narcotráfico en tres zonas de Cali entre el 2014 y 2015',
     venue: 'Tesis — Universidad Icesi',
     date: '2018-01-01',
-    url: '#',
+    url: 'https://drive.google.com/file/d/1lQPD1gP_Nz1lR26EilTuIWun43nhnyhz/view?usp=sharing',
   },
   {
     id: 8,
@@ -77,6 +77,14 @@ export const papers = [
     title: 'Participación en: ¿Quiénes generan la charla sobre la crisis migratoria?',
     venue: 'Publimetro',
     date: '2019-01-01',
-    url: '#',
+    url: 'https://www.readmetro.com/es/colombia/bogota/20190208/4/',
+  },
+  {
+    id: 11,
+    filename: 'Dia_Mujer_Publimetro_2019.html',
+    title: 'Participación en: Día de la Mujer sí, ¿pero qué pasa el resto del año?',
+    venue: 'Publimetro',
+    date: '2019-03-08',
+    url: 'https://www.readmetro.com/es/colombia/bogota/20190308/2/',
   },
 ]
