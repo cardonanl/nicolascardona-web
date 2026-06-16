@@ -7,6 +7,7 @@ import ArticlesWindow from '../windows/ArticlesWindow'
 import ProjectsWindow from '../windows/ProjectsWindow'
 import VisualArtWindow from '../windows/VisualArtWindow'
 import PapersWindow from '../windows/PapersWindow'
+import SnakeWindow from '../windows/SnakeWindow'
 
 const ICONS = {
   about:    'https://win98icons.alexmeub.com/icons/png/computer_explorer-5.png',
@@ -15,6 +16,7 @@ const ICONS = {
   art:      'https://win98icons.alexmeub.com/icons/png/paint_old-0.png',
   papers:   'https://win98icons.alexmeub.com/icons/png/msagent-3.png',
   email:    'https://win98icons.alexmeub.com/icons/png/address_book_users.png',
+  snake:    'https://win98icons.alexmeub.com/icons/png/joystick-2.png',
 }
 
 export default function Desktop() {
@@ -46,6 +48,7 @@ export default function Desktop() {
           icon={ICONS.email}
           href="mailto:nicolascardonal96@gmail.com"
         />
+        <DesktopIcon label="Snake" icon={ICONS.snake} onClick={() => openWindow('snake')} />
       </div>
 
       <Window {...makeWindowProps('about')} title="Welcome — Nicolas Cardona" icon={ICONS.about} width={520}>
@@ -66,6 +69,10 @@ export default function Desktop() {
 
       <Window {...makeWindowProps('papers')} title="C:\Research\Papers_&_Media" icon={ICONS.papers}>
         <PapersWindow />
+      </Window>
+
+      <Window {...makeWindowProps('snake')} title="Snake.exe" icon={ICONS.snake} width={310} resizable={false}>
+        <SnakeWindow />
       </Window>
 
       <Taskbar />

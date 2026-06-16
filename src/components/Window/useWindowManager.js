@@ -17,6 +17,7 @@ const defaultWindows = () => {
     art:      { isOpen: false, zIndex: 1, position: { x: 180,    y: 80  } },
     papers:   { isOpen: false, zIndex: 1, position: { x: col2,   y: 400 } },
     blogPost: { isOpen: false, zIndex: 1, position: { x: 120,    y: 60  } },
+    snake:    { isOpen: false, zIndex: 1, position: { x: 200,    y: 120 } },
   }
 }
 

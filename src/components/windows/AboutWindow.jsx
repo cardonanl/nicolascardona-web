@@ -10,9 +10,10 @@ const SKILLS = [
 ]
 
 const LINKS = [
-  { label: 'Twitter / X', href: 'https://twitter.com/cardonanl', icon: 'https://win98icons.alexmeub.com/icons/png/world-3.png' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/nicol%C3%A1s-cardona-londo%C3%B1o-2a1321149/', icon: 'https://win98icons.alexmeub.com/icons/png/world-3.png' },
-  { label: 'GitHub', href: 'https://github.com/cardonanl', icon: 'https://win98icons.alexmeub.com/icons/png/world-3.png' },
+  { label: 'Twitter / X', href: 'https://twitter.com/cardonanl' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/nicol%C3%A1s-cardona-londo%C3%B1o-2a1321149/' },
+  { label: 'GitHub', href: 'https://github.com/cardonanl' },
+  { label: 'Substack', href: 'https://substack.com/@cardonanl' },
 ]
 
 export default function AboutWindow() {
