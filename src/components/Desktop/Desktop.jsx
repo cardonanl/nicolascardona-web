@@ -17,6 +17,7 @@ const ICONS = {
   papers:   'https://win98icons.alexmeub.com/icons/png/msagent-3.png',
   email:    'https://win98icons.alexmeub.com/icons/png/address_book_users.png',
   snake:    'https://win98icons.alexmeub.com/icons/png/joystick-2.png',
+  cali:     'https://win98icons.alexmeub.com/icons/png/monitor-0.png',
 }
 
 export default function Desktop() {
@@ -49,6 +50,7 @@ export default function Desktop() {
           href="mailto:nicolascardonal96@gmail.com"
         />
         <DesktopIcon label="Snake" icon={ICONS.snake} onClick={() => openWindow('snake')} />
+        <DesktopIcon label="Monitor Cali" icon={ICONS.cali} href="http://calimonitor.nicolascardona.com/" external />
       </div>
 
       <Window {...makeWindowProps('about')} title="Welcome — Nicolas Cardona" icon={ICONS.about} width={520}>
