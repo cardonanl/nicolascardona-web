@@ -89,10 +89,14 @@ body {
 .desktop-icons {
   display: flex;
   flex-direction: column;
+  /* Wrap into extra columns instead of running under the taskbar */
+  flex-wrap: wrap;
+  align-content: flex-start;
   gap: 16px;
   padding: 20px;
   position: absolute;
   top: 0;
+  bottom: 38px;
   left: 0;
   z-index: 1;
 }

@@ -6,14 +6,15 @@ const defaultWindows = () => {
   const W = typeof window !== 'undefined' ? window.innerWidth : 1280
   // Each window is zoom-scaled by 1.35 in CSS.
   // about: 520px → ~702px visual; projects: 560px → ~756px visual; gap: 24px
+  // Only the about window opens by default, so center it on its own;
+  // col2 is where windows opened later land, to the right of it.
   const visualAbout = Math.round(520 * 1.35)
-  const totalVisual = visualAbout + Math.round(560 * 1.35) + 24
-  const startX = Math.max(30, Math.round((W - totalVisual) / 2))
-  const col2 = startX + visualAbout + 24
+  const startX = Math.max(30, Math.round((W - visualAbout) / 2))
+  const col2 = Math.max(30, Math.min(startX + visualAbout + 24, W - Math.round(560 * 1.35) - 30))
   return {
     about:    { isOpen: true,  zIndex: 2, position: { x: startX, y: 30  } },
     articles: { isOpen: false, zIndex: 1, position: { x: col2,   y: 30  } },
-    projects: { isOpen: true,  zIndex: 1, position: { x: col2,   y: 30  } },
+    projects: { isOpen: false, zIndex: 1, position: { x: col2,   y: 30  } },
     art:      { isOpen: false, zIndex: 1, position: { x: 180,    y: 80  } },
     papers:   { isOpen: false, zIndex: 1, position: { x: col2,   y: 400 } },
     blogPost: { isOpen: false, zIndex: 1, position: { x: 120,    y: 60  } },

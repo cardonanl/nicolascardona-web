@@ -8,6 +8,7 @@ import ProjectsWindow from '../windows/ProjectsWindow'
 import VisualArtWindow from '../windows/VisualArtWindow'
 import PapersWindow from '../windows/PapersWindow'
 import SnakeWindow from '../windows/SnakeWindow'
+import { asset } from '../../utils/asset'
 
 const ICONS = {
   about:    'https://win98icons.alexmeub.com/icons/png/computer_explorer-5.png',
@@ -18,6 +19,10 @@ const ICONS = {
   email:    'https://win98icons.alexmeub.com/icons/png/address_book_users.png',
   snake:    'https://win98icons.alexmeub.com/icons/png/joystick-2.png',
   cali:     'https://win98icons.alexmeub.com/icons/png/network_television-3.png',
+  cali2021:    asset('images/icons/cali2021.png'),
+  calandracos: asset('images/icons/calandracos.png'),
+  presupuesto: 'https://win98icons.alexmeub.com/icons/png/calculator-0.png',
+  pasillo:     'https://win98icons.alexmeub.com/icons/png/paint_file-5.png',
 }
 
 export default function Desktop() {
@@ -50,7 +55,11 @@ export default function Desktop() {
           href="mailto:nicolascardonal96@gmail.com"
         />
         <DesktopIcon label="Snake" icon={ICONS.snake} onClick={() => openWindow('snake')} />
-        <DesktopIcon label="Monitor Cali" icon={ICONS.cali} href="http://calimonitor.nicolascardona.com/" external />
+        <DesktopIcon label="Monitor Cali" icon={ICONS.cali} href="https://calimonitor.nicolascardona.com/" external />
+        <DesktopIcon label="Cali 2021" icon={ICONS.cali2021} href="https://www.cali2021.com/" external />
+        <DesktopIcon label="Calandracos" icon={ICONS.calandracos} href="https://calandracos.nicolascardona.com/" external />
+        <DesktopIcon label="Presupuesto 2027" icon={ICONS.presupuesto} href="https://presupuesto2027.nicolascardona.com/" external />
+        <DesktopIcon label="Pasillo Público" icon={ICONS.pasillo} href="https://pasillopublico.com/" external />
       </div>
 
       <Window {...makeWindowProps('about')} title="Welcome — Nicolas Cardona" icon={ICONS.about} width={520}>
