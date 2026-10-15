@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{var t=localStorage.getItem("importarcarro-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()</script>
 <title>Importar un carro a Colombia: aranceles, impuestos y restricciones (2026)</title>
 <meta name="description" content="Simulador de cuánto cuesta importar un carro a Colombia en 2026: arancel, IVA e impuesto al consumo según origen, motor y valor FOB. Incluye restricciones para usados, antiguos y clásicos.">
 <meta name="theme-color" content="#F5F5F7" media="(prefers-color-scheme: light)">
@@ -12,7 +13,7 @@
 <meta property="og:url" content="https://nicolascardona.com/importarcarro/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_CO">
-<meta property="og:title" content="Cuánto cuesta meter un carro a Colombia">
+<meta property="og:title" content="Cuánto cuesta traer un carro a Colombia">
 <meta property="og:description" content="Arancel, IVA e impuesto al consumo, restricciones para usados y comparación con EE.UU., México y España. Reglas vigentes a octubre de 2026.">
 <meta property="og:image" content="https://nicolascardona.com/importarcarro/og.png">
 <meta property="og:image:width" content="1200">
@@ -71,7 +72,13 @@ button,input,select{font:inherit;color:inherit}
 .navin{height:44px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{font-size:14px;font-weight:600;color:var(--ink)}
 .brand:hover{text-decoration:none}
+.navr{display:flex;align-items:center;gap:10px}
 .navlinks{display:flex;gap:22px;font-size:12px}
+.themebtn{width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background-color .32s var(--ease)}
+.themebtn:hover{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.themebtn .i-sun{display:none}
+.themebtn[data-mode="dark"] .i-sun{display:block}
+.themebtn[data-mode="dark"] .i-moon{display:none}
 .navlinks a{color:var(--ink);opacity:.8;transition:opacity .32s var(--ease)}
 .navlinks a:hover{opacity:1;text-decoration:none}
 @media (max-width:760px){.navlinks{display:none}}
@@ -285,15 +292,21 @@ svg text{font-family:inherit;fill:var(--muted);font-size:11px}
 <nav class="nav" aria-label="Secciones">
   <div class="wrap navin">
     <a class="brand" href="#top">Importar un carro a Colombia</a>
-    <div class="navlinks">
-      <a href="#resultado">Resultado</a><a href="#comparacion">Comparación</a><a href="#restricciones">Restricciones</a><a href="#analisis">Análisis</a><a href="#verificacion">Verificación</a>
+    <div class="navr">
+      <div class="navlinks">
+        <a href="#resultado">Resultado</a><a href="#comparacion">Comparación</a><a href="#restricciones">Restricciones</a><a href="#analisis">Análisis</a><a href="#verificacion">Verificación</a>
+      </div>
+      <button type="button" class="themebtn" id="themeBtn" aria-label="Cambiar a modo oscuro" title="Cambiar a modo oscuro">
+        <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
     </div>
   </div>
 </nav>
 
 <header class="hero" id="top">
   <div class="wrap">
-    <h1>Cuánto cuesta meter un carro a Colombia</h1>
+    <h1>Cuánto cuesta traer un carro a Colombia</h1>
     <p class="subhead">Arancel, IVA e impuesto al consumo según origen, motor y precio.</p>
     <p class="asof">Reglas vigentes al 14 de octubre de 2026. Simulador educativo, no reemplaza la liquidación de la DIAN.</p>
   </div>
@@ -823,7 +836,25 @@ svg text{font-family:inherit;fill:var(--muted);font-size:11px}
     io.observe($('resultado'));
   }
 
-  readURL();buildControls();syncInputs();render();watchDock();
+  function initTheme(){
+    var btn=$('themeBtn'), mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+    function cur(){var t=document.documentElement.getAttribute('data-theme');return t||(mq&&mq.matches?'dark':'light')}
+    function paint(){
+      var m=cur(), label=(m==='dark'?'Cambiar a modo claro':'Cambiar a modo oscuro');
+      btn.setAttribute('data-mode',m);btn.setAttribute('aria-label',label);btn.setAttribute('title',label);
+      var col=(m==='dark'?'#000000':'#F5F5F7');
+      Array.prototype.forEach.call(document.querySelectorAll('meta[name="theme-color"]'),function(x){x.setAttribute('content',col)});
+    }
+    btn.addEventListener('click',function(){
+      var n=(cur()==='dark'?'light':'dark');
+      document.documentElement.setAttribute('data-theme',n);
+      try{localStorage.setItem('importarcarro-theme',n)}catch(e){}
+      paint();
+    });
+    if(mq&&mq.addEventListener) mq.addEventListener('change',paint);
+    paint();
+  }
+  readURL();buildControls();syncInputs();render();watchDock();initTheme();
 })();
 </script>
 </body>
