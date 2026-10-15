@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Importar un carro a Colombia: aranceles, impuestos y restricciones (2026)</title>
+<meta name="description" content="Simulador de cuánto cuesta importar un carro a Colombia en 2026: arancel, IVA e impuesto al consumo según origen, motor y valor FOB. Incluye restricciones para usados, antiguos y clásicos.">
+<meta name="theme-color" content="#F5F5F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%97%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://nicolascardona.com/importarcarro/">
+<meta property="og:url" content="https://nicolascardona.com/importarcarro/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CO">
+<meta property="og:title" content="Cuánto cuesta meter un carro a Colombia">
+<meta property="og:description" content="Arancel, IVA e impuesto al consumo, restricciones para usados y comparación con EE.UU., México y España. Reglas vigentes a octubre de 2026.">
+<meta property="og:image" content="https://nicolascardona.com/importarcarro/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F5F7; --surface:#FFFFFF; --ink:#1D1D1F; --muted:#6E6E73; --line:#D2D2D7;
+  --accent:#0071E3; --accent-hover:#0076DF; --link:#0066CC; --glass:rgba(245,245,247,.8);
+  --fob:#1D1D1F; --fl:#A1A1A6; --ar:#B83A0B; --iva:#F28C28; --inc:#F7C873;
+  --on-fob:#FFFFFF; --on-fl:#1D1D1F; --on-ar:#FFFFFF; --on-iva:#1D1D1F; --on-inc:#1D1D1F;
+  --ok:#248A3D; --bad:#D70015; --warn:#B25000;
+  --ease:cubic-bezier(.4,0,.6,1);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#000000; --surface:#1D1D1F; --ink:#F5F5F7; --muted:#A1A1A6; --line:#424245;
+    --link:#2997FF; --glass:rgba(0,0,0,.72);
+    --fob:#F5F5F7; --fl:#6E6E73; --ar:#FF7A45; --iva:#FFB26B; --inc:#FFD9A0;
+    --on-fob:#000000; --on-fl:#FFFFFF; --on-ar:#000000; --on-iva:#000000; --on-inc:#000000;
+    --ok:#30D158; --bad:#FF453A; --warn:#FF9F0A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#000000; --surface:#1D1D1F; --ink:#F5F5F7; --muted:#A1A1A6; --line:#424245;
+  --link:#2997FF; --glass:rgba(0,0,0,.72);
+  --fob:#F5F5F7; --fl:#6E6E73; --ar:#FF7A45; --iva:#FFB26B; --inc:#FFD9A0;
+  --on-fob:#000000; --on-fl:#FFFFFF; --on-ar:#000000; --on-iva:#000000; --on-inc:#000000;
+  --ok:#30D158; --bad:#FF453A; --warn:#FF9F0A;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:150px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"SF Pro Display","SF Pro Text",-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.47;font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.3px;text-wrap:balance}
+.lead,.hero .subhead,.bigsub{text-wrap:balance}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.07}
+h2{font-size:clamp(28px,4vw,40px);line-height:1.1;text-align:center}
+h3{font-size:19px;line-height:1.25}
+p{margin:0}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:980px;z-index:100}
+.skip:focus{left:8px}
+.wrap{max-width:1024px;margin:0 auto;padding:0 22px}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:60;background:var(--glass);-webkit-backdrop-filter:saturate(1.8) blur(20px);backdrop-filter:saturate(1.8) blur(20px);padding-top:env(safe-area-inset-top,0px)}
+.navin{height:44px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-size:14px;font-weight:600;color:var(--ink)}
+.brand:hover{text-decoration:none}
+.navlinks{display:flex;gap:22px;font-size:12px}
+.navlinks a{color:var(--ink);opacity:.8;transition:opacity .32s var(--ease)}
+.navlinks a:hover{opacity:1;text-decoration:none}
+@media (max-width:760px){.navlinks{display:none}}
+
+/* hero */
+.hero{background:var(--bg);text-align:center;padding:36px 0 22px}
+.hero .subhead{margin:14px auto 0;max-width:34ch;font-size:clamp(19px,2.6vw,26px);line-height:1.2;color:var(--muted)}
+.hero .asof{margin-top:12px;font-size:13px;color:var(--muted)}
+
+/* filters */
+.filters{background:var(--glass);-webkit-backdrop-filter:saturate(1.8) blur(20px);backdrop-filter:saturate(1.8) blur(20px);border-bottom:1px solid var(--line);z-index:50}
+@media (min-width:901px){.filters{position:sticky;top:calc(44px + env(safe-area-inset-top,0px))}}
+.frow{display:grid;grid-template-columns:1.1fr 1.55fr 1.1fr 1.6fr auto;gap:10px;padding:12px 0;align-items:center}
+.ctl{position:relative;display:flex;align-items:center;gap:10px;height:44px;padding:0 0 0 16px;border-radius:980px;background:var(--surface);border:1px solid var(--line);min-width:0;transition:border-color .32s var(--ease)}
+.ctl:hover{border-color:var(--muted)}
+.ctl:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.ctl .k{font-size:12px;color:var(--muted);white-space:nowrap}
+.ctl select{appearance:none;-webkit-appearance:none;border:0;background:transparent;font-weight:600;font-size:15px;min-width:0;flex:1;height:100%;cursor:pointer;text-overflow:ellipsis;outline:none;padding:0 38px 0 0}
+.ctl select option{color:var(--ink);background:var(--surface)}
+.ctl::after{content:"";position:absolute;right:16px;top:50%;width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.ctl.nochev{padding-right:16px}
+.ctl .k{pointer-events:none}
+.tip{position:relative;flex:none;width:28px;height:28px;margin-left:-6px;border:0;background:none;color:var(--muted);cursor:help;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:color .32s var(--ease)}
+.tip::after{content:"";position:absolute;inset:-8px}
+.tip:hover,.tip[aria-expanded="true"],.tip:focus-visible{color:var(--link)}
+.tipbox{position:absolute;left:0;top:calc(100% + 10px);z-index:90;width:min(320px,82vw);padding:14px 16px;background:var(--ink);color:var(--surface);border-radius:12px;font-size:13px;line-height:1.45;font-weight:400;box-shadow:rgba(0,0,0,.22) 3px 5px 30px 0;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .22s ease,transform .22s ease,visibility .22s;pointer-events:none}
+.tipbox b{font-weight:600}
+.ctl.fob:has(.tip:hover) .tipbox,.ctl.fob:has(.tip:focus-visible) .tipbox,.ctl.fob.tipopen .tipbox{opacity:1;visibility:visible;transform:none}
+.ctl.nochev::after{display:none}
+.ctl input[type=number]{border:0;background:transparent;font-weight:600;font-size:15px;width:84px;min-width:0;outline:none;padding:0;-moz-appearance:textfield}
+.ctl input[type=number]::-webkit-outer-spin-button,.ctl input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ctl.fob input[type=range]{flex:1;min-width:60px;accent-color:var(--accent);margin:0;height:28px}
+.more{background:none;border:0;color:var(--link);font-size:14px;cursor:pointer;padding:10px 4px;white-space:nowrap;min-height:44px}
+.more::after{content:"";display:inline-block;width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg);margin-left:8px;transition:transform .32s var(--ease)}
+.more[aria-expanded="true"]::after{transform:translateY(1px) rotate(-135deg)}
+.adv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 0 12px}
+.adv[hidden]{display:none}
+@media (max-width:900px){
+  .frow{grid-template-columns:1fr 1fr}
+  .ctl.fob{grid-column:1/-1}
+  .more{grid-column:1/-1;justify-self:start}
+}
+@media (max-width:700px){
+  .hero .asof{display:none}
+  .frow>.ctl:first-child{grid-column:1/-1}
+  .ctl{flex-direction:column;align-items:flex-start;justify-content:center;gap:0;height:56px;padding:6px 0 6px 16px}
+  .ctl select{height:36px;flex:none;width:100%;padding-right:34px}
+  .ctl.fob{flex-direction:row;align-items:center;gap:10px;height:48px}
+  .adv{grid-template-columns:1fr 1fr}
+}
+
+/* bands */
+.band{padding:56px 0 64px;background:var(--surface)}
+.band.alt{background:var(--bg)}
+@media (max-width:700px){.band{padding:40px 0 44px}}
+.lead{margin:12px auto 0;max-width:54ch;text-align:center;font-size:19px;line-height:1.3;color:var(--muted)}
+.fine{font-size:13px;line-height:1.4;color:var(--muted)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 22px;border-radius:980px;font-size:17px;cursor:pointer;border:1px solid transparent;transition:background-color .32s var(--ease),color .32s var(--ease)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-hover)}
+.btn.outline{background:transparent;color:var(--link);border-color:var(--link)}
+.btn.outline:hover{background:color-mix(in srgb,var(--link) 8%,transparent)}
+.btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
+
+/* result */
+.result{position:relative;text-align:center}
+.status{font-size:15px;max-width:60ch;margin:0 auto;color:var(--muted);text-wrap:balance}
+.status i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;vertical-align:0}
+.status b{font-weight:600;color:var(--ink)}
+.bigline{margin-top:18px}
+.big{font-size:clamp(46px,9vw,88px);font-weight:600;line-height:1;letter-spacing:-1.5px}
+.bigsub{margin-top:10px;font-size:clamp(17px,2.4vw,24px);color:var(--muted);line-height:1.25}
+.landed{margin-top:6px;font-size:15px;color:var(--muted)}
+.figs{max-width:820px;margin:34px auto 0;transition:opacity .32s var(--ease)}
+.figs.dim{opacity:.15;filter:grayscale(1)}
+.bigline{transition:opacity .32s var(--ease)}
+.bigline.dim{opacity:.3}
+.brackets{display:flex;width:100%}
+.br{min-width:0;border:2px solid currentColor;border-bottom:0;padding:3px 8px 4px;font-size:13px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:width .32s var(--ease)}
+.br.orig{color:var(--ink)}
+.br.taxb{color:var(--ar);margin-left:3px}
+.stack{display:flex;width:100%;height:46px;background:var(--bg);overflow:hidden}
+.seg{display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .32s var(--ease)}
+.segkey{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.segkey i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.segkey b{color:var(--ink);font-weight:600}
+.compcap{margin-top:14px;font-size:17px}
+.stamp{position:absolute;top:56%;left:50%;transform:translate(-50%,-50%) rotate(-7deg);border:5px solid var(--bad);color:var(--bad);padding:8px 26px;font-weight:700;font-size:clamp(26px,5vw,44px);text-align:center;background:color-mix(in srgb,var(--surface) 90%,transparent);display:none;pointer-events:none;z-index:2;letter-spacing:-.3px}
+.stamp.show{display:block}
+.stamp small{display:block;font-size:13px;font-weight:500;color:var(--ink);letter-spacing:0}
+.notes{list-style:none;margin:26px auto 0;padding:0;max-width:640px;text-align:left;display:grid;gap:8px}
+.notes li{display:flex;gap:10px;font-size:14px;color:var(--muted);line-height:1.4}
+.notes li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--warn);margin-top:6px}
+.detail{max-width:820px;margin:26px auto 0;text-align:left}
+.detail summary{list-style:none;cursor:pointer;color:var(--link);font-size:15px;text-align:center;padding:10px;min-height:44px}
+.detail summary::-webkit-details-marker{display:none}
+.detail[open] summary .t1{display:none}
+.detail:not([open]) summary .t2{display:none}
+.wfrow{display:grid;grid-template-columns:150px 1fr 150px;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.wfrow .nm{font-size:15px;font-weight:600}
+.wfrow .nm small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.track{position:relative;height:20px;background:var(--bg)}
+.bar{position:absolute;top:0;bottom:0;min-width:3px;transition:left .32s var(--ease),width .32s var(--ease)}
+.wfrow .val{text-align:right;font-size:15px}
+.wfrow .val small{display:block;color:var(--muted);font-size:12px}
+.wfrow.total{border-top:2px solid var(--ink)}
+@media (max-width:620px){.wfrow{grid-template-columns:1fr 120px}.wfrow .track{grid-column:1/-1;order:3}}
+.why{margin-top:16px;display:grid;gap:8px}
+.why div{font-size:14px;padding-left:12px;border-left:4px solid var(--line);color:var(--muted)}
+.why b{color:var(--ink);font-weight:600}
+
+/* compare */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:34px}
+.tile{background:var(--surface);padding:28px 24px 26px;text-align:center}
+.band:not(.alt) .tile{background:var(--bg)}
+.tile h3{color:var(--muted);font-weight:500;font-size:17px}
+.mult{font-size:clamp(52px,8vw,72px);font-weight:600;line-height:1;letter-spacing:-1.5px;margin-top:8px}
+.mult small{display:block;margin-top:8px;font-size:15px;font-weight:400;letter-spacing:0;color:var(--muted)}
+.pair{display:grid;gap:6px;margin:20px 0 14px}
+.pair div{display:grid;grid-template-columns:42px 1fr 96px;align-items:center;gap:8px;font-size:13px;color:var(--muted);text-align:left}
+.pair div b{color:var(--ink);font-weight:600;text-align:right}
+.pair span.b{display:block;height:12px;transition:width .32s var(--ease)}
+.tile .diff{font-weight:600;font-size:17px}
+.fine.center{text-align:center;max-width:70ch;margin:22px auto 0}
+
+/* restrictions */
+.conds{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:34px}
+.cond{background:var(--bg);padding:24px 22px;position:relative}
+.band.alt .cond{background:var(--surface)}
+.cond[aria-current="true"]{box-shadow:inset 0 4px 0 var(--ink)}
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;margin-bottom:10px}
+.tag i{width:8px;height:8px;border-radius:50%}
+.cond p{font-size:15px;color:var(--muted);margin-top:8px;line-height:1.4}
+.more2{max-width:820px;margin:22px auto 0}
+.more2 summary{list-style:none;cursor:pointer;color:var(--link);font-size:15px;text-align:center;padding:10px;min-height:44px}
+.more2 summary::-webkit-details-marker{display:none}
+.more2[open] summary .t1{display:none}
+.more2:not([open]) summary .t2{display:none}
+.rules{display:grid;gap:14px;margin-top:8px}
+.rule{padding:16px 0;border-top:1px solid var(--line);font-size:15px}
+.rule b{display:block;font-weight:600}
+.rule span{color:var(--muted)}
+
+/* analysis */
+.seg2{display:inline-flex;background:color-mix(in srgb,var(--ink) 8%,transparent);border-radius:980px;padding:3px;margin:28px auto 0}
+.segwrap{text-align:center}
+.seg2 button{border:0;background:transparent;border-radius:980px;padding:0 20px;height:38px;font-size:15px;cursor:pointer;color:var(--ink);transition:background-color .32s var(--ease)}
+.seg2 button[aria-selected="true"]{background:var(--surface);font-weight:600}
+.panelx{margin-top:26px}
+.panelx[hidden]{display:none}
+.heat{display:grid;grid-template-columns:140px repeat(5,minmax(0,1fr));gap:4px;font-size:14px}
+.heat .hd{font-weight:600;font-size:12px;color:var(--muted);align-self:end;padding:2px 2px 6px;text-align:center}
+.heat .rh{align-self:center;font-weight:600;line-height:1.2}
+.heat .rh small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.cell{border:2px solid transparent;padding:12px 4px;cursor:pointer;text-align:center;background:var(--surface);line-height:1.15;color:var(--ink);min-height:48px;transition:border-color .32s var(--ease)}
+.cell:hover{border-color:var(--muted)}
+.cell b{display:block;font-size:17px}
+.cell small{font-size:12px;color:var(--muted)}
+.cell[aria-pressed="true"]{border-color:var(--ink)}
+@media (max-width:620px){.heat{grid-template-columns:78px repeat(5,minmax(0,1fr));font-size:12px}.cell b{font-size:14px}.cell small{display:none}.cell{padding:12px 0}}
+.chartwrap{overflow-x:auto;background:var(--surface);padding:14px}
+svg text{font-family:inherit;fill:var(--muted);font-size:11px}
+
+/* timeline + verification */
+.tl{list-style:none;margin:34px auto 0;padding:0;max-width:820px}
+.tl li{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:16px 0;border-top:1px solid var(--line);font-size:15px}
+.tl time{font-weight:600}
+.tl span{color:var(--muted)}
+@media (max-width:620px){.tl li{grid-template-columns:1fr;gap:4px}}
+.vt{width:100%;border-collapse:collapse;font-size:14px}
+.vt th,.vt td{padding:14px 12px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
+.vt thead th{border-top:0;font-size:12px;color:var(--muted);font-weight:500}
+.vt td:first-child{font-weight:600;width:26%}
+.vt td:nth-child(2){width:16%;white-space:nowrap}
+.vt td:last-child{color:var(--muted)}
+.vtwrap{overflow-x:auto;margin-top:26px}
+@media (max-width:700px){.vt{min-width:620px}}
+.vtag{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13px}
+.vtag i{width:8px;height:8px;border-radius:50%}
+.src{columns:2 340px;column-gap:28px;font-size:14px;padding-left:20px;margin:16px 0 0}
+.src li{margin-bottom:6px;break-inside:avoid}
+.foot{background:var(--bg);padding:36px 0 110px}
+.foot p{max-width:80ch;margin:0 auto}
+
+/* dock + toast */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:70;display:none;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:#000;color:#F5F5F7;font-size:15px;transform:translateY(110%);transition:transform .32s var(--ease)}
+.dock.show{transform:none}
+.dock b{font-size:19px;font-weight:600}
+.dock a{background:#F5F5F7;color:#000;height:36px;padding:0 16px;border-radius:980px;display:inline-flex;align-items:center;font-size:14px}
+.dock a:hover{text-decoration:none;background:#fff}
+@media (max-width:900px){.dock{display:flex}}
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:9px 16px;border-radius:980px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:80}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none !important}
+}
+@media print{
+  body{background:#fff;color:#000}
+  .nav,.filters,.dock,.toast,.skip,.btns{display:none !important}
+  .band{padding:24px 0;break-inside:avoid}
+  details:not([open])>*:not(summary){display:block}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#resultado">Ir al resultado</a>
+
+<nav class="nav" aria-label="Secciones">
+  <div class="wrap navin">
+    <a class="brand" href="#top">Importar un carro a Colombia</a>
+    <div class="navlinks">
+      <a href="#resultado">Resultado</a><a href="#comparacion">Comparación</a><a href="#restricciones">Restricciones</a><a href="#analisis">Análisis</a><a href="#verificacion">Verificación</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1>Cuánto cuesta meter un carro a Colombia</h1>
+    <p class="subhead">Arancel, IVA e impuesto al consumo según origen, motor y precio.</p>
+    <p class="asof">Reglas vigentes al 14 de octubre de 2026. Simulador educativo, no reemplaza la liquidación de la DIAN.</p>
+  </div>
+</header>
+
+<section class="filters" aria-label="Parámetros del simulador">
+  <div class="wrap">
+    <div class="frow">
+      <label class="ctl" title="El arancel depende de dónde se fabricó el carro, no de dónde lo compras."><span class="k">Origen</span><select id="origin"></select></label>
+      <label class="ctl"><span class="k">Motor</span><select id="pt"></select></label>
+      <label class="ctl"><span class="k">Condición</span><select id="cond"></select></label>
+      <div class="ctl fob nochev"><span class="k"><label for="fobn">FOB USD</label></span><button type="button" class="tip" id="tipbtn" aria-describedby="tipfob" aria-expanded="false" aria-label="Qué es el valor FOB"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="4.6" r="1" fill="currentColor"/><path d="M8 7.2v4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><span class="tipbox" id="tipfob" role="tooltip"><b>FOB (Free On Board)</b> es el precio del carro en el puerto de origen, sin flete ni seguro. Normalmente es el valor de la factura del exportador.<br><br>Sobre el FOB se arma el valor CIF (FOB más flete y seguro), que es la base del arancel. Además, su monto define el impuesto al consumo: 8% bajo USD 30.000 y 16% desde ahí.</span><input type="number" id="fobn" min="1000" max="500000" step="500" value="30000" inputmode="numeric"><input type="range" id="fobr" min="8000" max="100000" step="500" value="30000" aria-label="Valor FOB, control deslizante"></div>
+      <button type="button" class="more" id="advBtn" aria-expanded="false" aria-controls="adv">Más ajustes</button>
+    </div>
+    <div class="adv" id="adv" hidden>
+      <label class="ctl nochev"><span class="k">Flete y seguro USD</span><input type="number" id="fr" min="0" step="100" value="1500" inputmode="numeric"></label>
+      <label class="ctl nochev"><span class="k">TRM COP/USD</span><input type="number" id="trm" min="1" step="50" value="3200" inputmode="numeric"></label>
+      <label class="ctl nochev" title="Úsalo si tu subpartida o acuerdo tiene otra tarifa."><span class="k">Arancel manual %</span><input type="number" id="man" min="0" max="100" step="0.1" placeholder="auto" inputmode="decimal"></label>
+    </div>
+  </div>
+</section>
+
+<main>
+<section class="band" id="resultado" aria-label="Resultado">
+  <div class="wrap result">
+    <div class="stamp" id="stamp">NO AUTORIZADA<small>Importación de usados prohibida</small></div>
+    <div class="status" id="status"></div>
+    <div class="bigline">
+      <div class="big" id="taxTotal" aria-live="polite"></div>
+      <p class="bigsub" id="taxPct"></p>
+      <p class="landed" id="landed"></p>
+    </div>
+
+    <div class="figs" id="figs">
+      <div class="brackets" id="brackets"></div>
+      <div class="stack" id="stack" role="img"></div>
+      <div class="segkey" id="segkey"></div>
+      <p class="compcap" id="compcap"></p>
+    </div>
+
+    <div class="btns">
+      <button type="button" class="btn primary" id="share">Copiar enlace</button>
+      <button type="button" class="btn outline" id="openDetail">Ver desglose</button>
+    </div>
+
+    <ul class="notes" id="notes"></ul>
+
+    <details class="detail" id="detail">
+      <summary><span class="t1">Ver desglose paso a paso</span><span class="t2">Ocultar desglose</span></summary>
+      <div id="wf"></div>
+      <div class="why" id="why"></div>
+    </details>
+  </div>
+</section>
+
+<section class="band alt" id="comparacion">
+  <div class="wrap">
+    <h2>El mismo carro, comprado en otro país</h2>
+    <p class="lead">Cuántas veces el precio de allá cuesta aquí el mismo carro, con tu escenario actual.</p>
+    <div class="tiles" id="cmps"></div>
+    <p class="fine center" id="cmpnote"></p>
+  </div>
+</section>
+
+<section class="band" id="restricciones">
+  <div class="wrap">
+    <h2>Qué carros se pueden importar</h2>
+    <p class="lead">Los usados están prohibidos. Solo entran nuevos, antiguos y clásicos.</p>
+    <div class="conds" id="condcards"></div>
+    <details class="more2">
+      <summary><span class="t1">Otras reglas y excepciones</span><span class="t2">Ocultar otras reglas</span></summary>
+      <div class="rules" id="rules"></div>
+    </details>
+  </div>
+</section>
+
+<section class="band alt" id="analisis">
+  <div class="wrap">
+    <h2>Explora otros escenarios</h2>
+    <p class="lead">Compara combinaciones de origen, motor y precio sin cambiar los filtros.</p>
+    <div class="segwrap">
+      <div class="seg2" role="tablist" aria-label="Vista de análisis">
+        <button type="button" role="tab" id="tab1" aria-selected="true" aria-controls="pn1">Por origen y motor</button>
+        <button type="button" role="tab" id="tab2" aria-selected="false" aria-controls="pn2">Por precio FOB</button>
+      </div>
+    </div>
+    <div class="panelx" id="pn1" role="tabpanel" aria-labelledby="tab1">
+      <p class="fine" style="margin-bottom:12px;text-align:center">Tributos como porcentaje del valor FOB. Toca una celda para simularla.</p>
+      <div class="heat" id="heat" role="group" aria-label="Matriz de carga tributaria"></div>
+    </div>
+    <div class="panelx" id="pn2" role="tabpanel" aria-labelledby="tab2" hidden>
+      <p class="fine" style="margin-bottom:12px;text-align:center">Tributos sobre FOB según el precio. El impuesto al consumo pasa de 8% a 16% al llegar a USD 30.000.</p>
+      <div class="chartwrap" id="curve"></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Qué cambió y qué viene</h2>
+    <ul class="tl">
+      <li><time>2019</time><span>Decreto 2051: arancel 0% para todos los eléctricos, sin cupo.</span></li>
+      <li><time>20 dic 2024</time><span>Decreto 1550: deroga el cupo de 3.000 híbridos al año con arancel de 5% y restablece la tarifa general del Arancel de Aduanas.</span></li>
+      <li><time>7 nov 2025</time><span>Colombia y Brasil prorrogan por un año la suspensión de aranceles del ACE 72, que había vencido el 30 de septiembre.</span></li>
+      <li><time>24 dic 2025</time><span>Decreto 1432: arancel de 40% (antes 35%) para carros de gasolina o diésel en 13 subpartidas de la partida 8703. Rige desde el 8 de enero de 2026 y no toca a los países con TLC.</span></li>
+      <li><time>15 abr 2026</time><span>La Corte Constitucional declara inexequible el Decreto 1474 de 2025 (Sentencia C-079). Se cae el impuesto al consumo de 19% para vehículos desde USD 30.000 y ordena devolver los indirectos pagados.</span></li>
+      <li><time>11 jun 2026</time><span>Decreto 0595: régimen de ensamble para eléctricos e híbridos y cupos de 20.000 unidades en 2026 y 20.000 en 2027 con arancel de 5%. Los híbridos ligeros quedan por fuera.</span></li>
+      <li><time>Fin de 2026</time><span>Vence la prórroga con Brasil. Las fuentes dan fechas distintas (septiembre a octubre) y no encontré confirmación de renovación.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band alt" id="verificacion">
+  <div class="wrap">
+    <h2>Qué está confirmado y qué no</h2>
+    <p class="lead">Cuatro puntos siguen abiertos. Los demás se verificaron contra decretos, sentencias o varias fuentes.</p>
+    <div class="vtwrap">
+    <table class="vt">
+      <thead><tr><th>Tema</th><th>Estado</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td>Arancel 40% a combustión sin TLC</td><td><span class="vtag"><i style="background:var(--ok)"></i>Confirmado</span></td><td>Texto del Decreto 1432 de 2025. Cubre 13 subpartidas de la partida 8703 y se aplica sin perjuicio de los tratados. Algunas cilindradas o diésel podrían quedar fuera.</td></tr>
+        <tr><td>Arancel 0% a eléctricos</td><td><span class="vtag"><i style="background:var(--ok)"></i>Confirmado</span></td><td>Decreto 2051 de 2019. Una fuente lo condiciona al certificado UPME (Resolución 135 de 2025).</td></tr>
+        <tr><td>Arancel de híbridos sin TLC</td><td><span class="vtag"><i style="background:var(--warn)"></i>Abierto</span></td><td>El Decreto 1550 de 2024 solo derogó el cupo de 5% y volvió a la tarifa general. Las cifras de 20% y 15% eran de un borrador. La prensa reporta entre 15% y 35% según la subpartida. El simulador usa 35% como techo.</td></tr>
+        <tr><td>0% con TLC</td><td><span class="vtag"><i style="background:var(--ok)"></i>Confirmado</span></td><td>EE.UU., México, UE, Corea y Canadá, por varias fuentes. Aplica al origen de fabricación y exige certificado de origen.</td></tr>
+        <tr><td>Brasil, ACE 72</td><td><span class="vtag"><i style="background:var(--warn)"></i>Abierto</span></td><td>Cupo de 50.000 unidades y 60% de integración regional. Sin renovación, 16,1% si acredita 60% y hasta 35% si no. Fechas de vencimiento en conflicto entre fuentes.</td></tr>
+        <tr><td>IVA 19% y 5%</td><td><span class="vtag"><i style="background:var(--ok)"></i>Confirmado</span></td><td>El 5% es la tarifa del art. 468-1 ET para eléctricos e híbridos. Con certificado UPME se puede pedir la devolución como pago de lo no debido, hasta 5 años después de la factura (Concepto DIAN 13853 de 2025).</td></tr>
+        <tr><td>Impuesto al consumo 8% y 16%</td><td><span class="vtag"><i style="background:var(--ok)"></i>Confirmado</span></td><td>Arts. 512-3 y 512-4 ET, con corte en USD 30.000 FOB. El 19% del Decreto 1474 no existe: lo tumbó la Sentencia C-079 de 2026.</td></tr>
+        <tr><td>Impuesto al consumo de eléctricos</td><td><span class="vtag"><i style="background:var(--warn)"></i>Abierto</span></td><td>Las fuentes divergen entre 0% y 8%. El simulador usa 0%.</td></tr>
+        <tr><td>Usados, antiguos y clásicos</td><td><span class="vtag"><i style="background:var(--ok)"></i>Confirmado</span></td><td>Decreto 925 de 2013, Convenio Automotor, Concepto DIAN 54 de 2007 y art. 37 de la Ley 769.</td></tr>
+        <tr><td>Importación temporal y cupo diplomático</td><td><span class="vtag"><i style="background:var(--warn)"></i>Fuente secundaria</span></td><td>Reportados por operadores logísticos. Confirma con la DIAN y Cancillería.</td></tr>
+        <tr><td>No incluido en el cálculo</td><td><span class="vtag"><i style="background:var(--fl)"></i>Fuera de alcance</span></td><td>Gastos de puerto y agenciamiento, margen del concesionario, matrícula, SOAT, visto bueno de la ANLA e impuesto vehicular anual (reportado entre 1,5% y 3,5% en combustión y máximo 1% en eléctricos). Tampoco pick-ups, camiones ni motos.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <details class="more2">
+      <summary><span class="t1">Ver las 17 fuentes</span><span class="t2">Ocultar fuentes</span></summary>
+      <ol class="src">
+        <li><a href="https://www.cerlatam.com/normatividad/mincit-decreto-1432-de-2025-24-dic-2025/">Decreto 1432 de 2025 (CER)</a> y <a href="https://dapre.presidencia.gov.co/normativa/normativa/DECRETO%201432%20DEL%2024%20DE%20DICIEMBRE%20DE%202025.pdf">texto en Presidencia</a></li>
+        <li><a href="https://normograma.dian.gov.co/dian/compilacion/docs/decreto_1550_2024.htm">DIAN: Decreto 1550 de 2024 (deroga el Decreto 1116 de 2017)</a></li>
+        <li><a href="https://www.corteconstitucional.gov.co/relatoria/2026/C-079-26.htm">Corte Constitucional: Sentencia C-079 de 2026 (Decreto 1474)</a></li>
+        <li><a href="https://estatuto.co/512-3">Estatuto Tributario art. 512-3</a> y <a href="https://estatuto.co/512-4">512-4</a></li>
+        <li><a href="https://www.gerencie.com/impuesto-de-vehiculos.html">Gerencie: IVA e impuesto al consumo en importación de vehículos</a></li>
+        <li><a href="https://aladda.com/tributos-aplicados-a-la-importacion-de-vehiculos-por-pais/">ALADDA: tributos por país, Colombia</a></li>
+        <li><a href="https://normograma.dian.gov.co/dian/compilacion/docs/concepto_aduanero_dian_0000054_2007.htm">DIAN, Concepto 54 de 2007: usados, antiguos y clásicos</a></li>
+        <li><a href="https://www.vuce.gov.co/getattachment/ayuda/importaciones/manual-regimen-de-licencia-previa/manual-regimen-de-licencia-previa-9oct2024.pdf.aspx">VUCE: Manual de licencia previa (Decreto 925 de 2013)</a></li>
+        <li><a href="https://fastdelivery.com.co/como-importar-un-carro-de-usa/">Requisitos: antiguos 35 años, clásicos 50 años, ANLA, Ley 769</a></li>
+        <li><a href="https://archivo.minambiente.gov.co/index.php/noticias-minambiente/4540-gobierno-nacional-reduce-a-0-el-arancel-de-importacion-para-todos-los-vehiculos-electricos-que-ingresen-al-pais">MinAmbiente: Decreto 2051 de 2019</a></li>
+        <li><a href="https://www.elcolombiano.com/inicio/ensamble-vehiculos-electricos-colombia-arancel-cero-mincomercio-CE37777216">Decreto 0595 de 2026 y cupos con arancel de 5%</a></li>
+        <li><a href="https://www.upme.gov.co/upme_noticias/que-es-el-certificado-de-incentivos-tributarios-de-la-upme-para-vehiculos-electricos-e-hibridos/">UPME: certificado de incentivos tributarios</a></li>
+        <li><a href="https://incp.org.co/publicaciones/infoincp-publicaciones/impuestos/2026/02/como-solicitar-la-devolucion-del-iva-en-la-compra-de-vehiculos-electricos-e-hibridos/">INCP: devolución del IVA en eléctricos e híbridos</a></li>
+        <li><a href="https://www.eltiempo.com/economia/sectores/siguen-sin-aranceles-colombia-y-brasil-prolongan-por-un-ano-el-libre-comercio-de-vehiculos-3507058">El Tiempo: prórroga con Brasil</a> y <a href="https://www.larepublica.co/economia/arancel-de-autos-proveniente-desde-brasil-afectaria-a-casi-50-000-unidades-cada-ano-4227663">La República: 16,1% y 60% de integración</a></li>
+        <li><a href="https://taxfoundation.org/data/all/state/2026-sales-tax-rates/">Tax Foundation: impuestos de ventas en EE.UU., 2026</a></li>
+        <li><a href="https://guiafiscal.es/glosario/impuesto-matriculacion/">Guía Fiscal: impuesto de matriculación en España</a></li>
+        <li><a href="https://sdv.com.mx/compendio/ley-federal-del-impuesto-sobre-automoviles-nuevos/articulo-3/">LFISAN art. 3: ISAN en México</a></li>
+      </ol>
+    </details>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="fine">Supuestos del simulador: arancel sobre CIF (FOB más flete y seguro); IVA e impuesto al consumo sobre CIF más arancel; sin gastos portuarios, agenciamiento, margen del concesionario, matrícula, SOAT ni impuesto vehicular anual. En la comparación entre países, el precio local es el FOB más los impuestos de venta de ese país, sin margen del concesionario. Esta página es informativa y no constituye asesoría aduanera ni tributaria: confirma la subpartida con la DIAN o un agente de aduanas. Última revisión documental: 14 de octubre de 2026.</p>
+  </div>
+</footer>
+
+<div class="dock" id="dock" aria-hidden="true"><span>Tributos <b id="dockTax"></b> <span id="dockPct"></span></span><a href="#resultado" tabindex="-1">Ver detalle</a></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  var ORIGINS=[
+    {id:'us',n:'Estados Unidos',g:'tlc'},{id:'mx',n:'México',g:'tlc'},{id:'eu',n:'Unión Europea',g:'tlc'},
+    {id:'kr',n:'Corea del Sur',g:'tlc'},{id:'ca',n:'Canadá',g:'tlc'},
+    {id:'br',n:'Brasil',g:'ace'},{id:'ar',n:'Argentina',g:'ace'},{id:'uy',n:'Uruguay',g:'ace'},
+    {id:'bx',n:'Brasil, si el ACE 72 no se renovó',g:'acx'},
+    {id:'cn',n:'China',g:'no'},{id:'jp',n:'Japón',g:'no'},{id:'in',n:'India',g:'no'},{id:'th',n:'Tailandia',g:'no'},{id:'ot',n:'Otro país sin TLC',g:'no'}
+  ];
+  var GROUPS=[
+    {id:'tlc',n:'Con TLC',s:'EE.UU., México, UE, Corea, Canadá',label:'Países con TLC'},
+    {id:'ace',n:'ACE 72 vigente',s:'Brasil, Argentina, Uruguay',label:'Mercosur, ACE 72 vigente'},
+    {id:'acx',n:'ACE 72 vencido',s:'Brasil sin renovación',label:'Mercosur, escenario sin renovación'},
+    {id:'no',n:'Sin TLC',s:'China, Japón, India, Tailandia',label:'Países sin TLC'}
+  ];
+  var PTS=[
+    {id:'ice',n:'Gasolina o diésel',s:'Gasolina'},
+    {id:'mhev',n:'Híbrido ligero',s:'Híb. ligero'},
+    {id:'fhev',n:'Híbrido completo',s:'Híb. completo'},
+    {id:'phev',n:'Híbrido enchufable',s:'Enchufable'},
+    {id:'bev',n:'Eléctrico',s:'Eléctrico'}
+  ];
+  var CONDS=[{id:'new',n:'Nuevo'},{id:'used',n:'Usado'},{id:'ant',n:'Antiguo (35+ años)'},{id:'cla',n:'Clásico (50+ años)'}];
+  var TARIFF={
+    no:{ice:40,mhev:35,fhev:35,phev:35,bev:0},
+    acx:{ice:16.1,mhev:16.1,fhev:16.1,phev:16.1,bev:0}
+  };
+  var IVA={ice:19,mhev:19,fhev:5,phev:5,bev:5};
+  var LOCAL=[
+    {id:'us',n:'EE.UU.',tax:function(){return 7.53},note:'EE.UU.: impuesto de ventas promedio estatal y local de 7,53% (Tax Foundation, 2026), que varía por estado.'},
+    {id:'mx',n:'México',tax:function(){return 16},note:'México: IVA de 16%, sin ISAN (impuesto progresivo a autos nuevos de gama media y alta; los eléctricos están exentos).'},
+    {id:'es',n:'España',tax:function(p){return 21+({ice:4.75,mhev:4.75,fhev:0,phev:0,bev:0})[p]},note:'España: IVA de 21% más matriculación por CO2; se asume 4,75% en combustión e híbrido ligero y 0% en el resto.'}
+  ];
+  var S={origin:'cn',pt:'ice',cond:'new',fob:30000,fr:1500,trm:3200,man:null};
+
+  var usd=new Intl.NumberFormat('es-CO',{style:'currency',currency:'USD',currencyDisplay:'code',maximumFractionDigits:0});
+  var cop=new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0});
+  var $=function(id){return document.getElementById(id)};
+  function pc(n,d){return n.toLocaleString('es-CO',{minimumFractionDigits:d,maximumFractionDigits:d})}
+  function originOf(id){return ORIGINS.filter(function(o){return o.id===id})[0]}
+  function pt(id){return PTS.filter(function(p){return p.id===id})[0]}
+  function copShort(v){return v>=1e6?('COP '+pc(v/1e6,0)+' millones'):cop.format(v)}
+
+  function rates(g,p,fob,manual){
+    var ar=(g==='no'||g==='acx')?TARIFF[g][p]:0;
+    if(manual!==null&&!isNaN(manual)) ar=manual;
+    var inc=(p==='bev')?0:(fob>=30000?16:8);
+    return {ar:ar,iva:IVA[p],inc:inc};
+  }
+  function calc(g,p,fob,fr,manual){
+    var r=rates(g,p,fob,manual);
+    var cif=fob+fr, arV=cif*r.ar/100, base=cif+arV, ivaV=base*r.iva/100, incV=base*r.inc/100;
+    var tax=arV+ivaV+incV;
+    return {r:r,cif:cif,arV:arV,ivaV:ivaV,incV:incV,tax:tax,total:cif+tax,burden:fob>0?tax/fob*100:0};
+  }
+
+  /* ---------- URL state ---------- */
+  function readURL(){
+    try{
+      var q=new URLSearchParams(location.search);
+      var o=q.get('o'); if(o&&originOf(o)) S.origin=o;
+      var p=q.get('p'); if(p&&pt(p)) S.pt=p;
+      var c=q.get('c'); if(c&&CONDS.some(function(x){return x.id===c})) S.cond=c;
+      var f=+q.get('f'); if(f>=1000&&f<=500000) S.fob=f;
+      var fr=q.get('fr'); if(fr!==null&&fr!==''&&+fr>=0&&+fr<=100000) S.fr=+fr;
+      var t=+q.get('t'); if(t>0&&t<100000) S.trm=t;
+      var m=q.get('m'); if(m!==null&&m!==''&&+m>=0&&+m<=100) S.man=+m;
+    }catch(e){}
+  }
+  function writeURL(){
+    try{
+      var q=new URLSearchParams();
+      q.set('o',S.origin);q.set('p',S.pt);q.set('c',S.cond);q.set('f',S.fob);q.set('fr',S.fr);q.set('t',S.trm);
+      if(S.man!==null) q.set('m',S.man);
+      history.replaceState(null,'','?'+q.toString());
+    }catch(e){}
+  }
+  function toast(msg){
+    var t=$('toast');t.textContent=msg;t.className='toast show';
+    clearTimeout(toast._t);toast._t=setTimeout(function(){t.className='toast'},1800);
+  }
+  function copyLink(){
+    var url=location.href;
+    function fallback(){
+      var ta=document.createElement('textarea');ta.value=url;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');toast('Enlace copiado')}catch(e){toast('No se pudo copiar')}
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){toast('Enlace copiado')},fallback);
+    }else fallback();
+  }
+
+  /* ---------- controls ---------- */
+  function buildControls(){
+    var html='';
+    GROUPS.forEach(function(g){
+      html+='<optgroup label="'+g.label+'">';
+      ORIGINS.filter(function(o){return o.g===g.id}).forEach(function(o){html+='<option value="'+o.id+'">'+o.n+'</option>'});
+      html+='</optgroup>';
+    });
+    $('origin').innerHTML=html;
+    $('pt').innerHTML=PTS.map(function(p){return '<option value="'+p.id+'">'+p.n+'</option>'}).join('');
+    $('cond').innerHTML=CONDS.map(function(c){return '<option value="'+c.id+'">'+c.n+'</option>'}).join('');
+    $('origin').addEventListener('change',function(e){S.origin=e.target.value;render()});
+    $('pt').addEventListener('change',function(e){S.pt=e.target.value;render()});
+    $('cond').addEventListener('change',function(e){S.cond=e.target.value;render()});
+    $('fobr').addEventListener('input',function(e){S.fob=+e.target.value;$('fobn').value=S.fob;render()});
+    $('fobn').addEventListener('input',function(e){var v=+e.target.value;if(v>0){S.fob=v;$('fobr').value=Math.min(Math.max(v,8000),100000);render()}});
+    $('fr').addEventListener('input',function(e){S.fr=Math.max(0,+e.target.value||0);render()});
+    $('trm').addEventListener('input',function(e){S.trm=Math.max(1,+e.target.value||1);render()});
+    $('man').addEventListener('input',function(e){var v=e.target.value;S.man=(v===''?null:+v);render()});
+    Array.prototype.forEach.call(document.querySelectorAll('label.ctl'),function(l){
+      var sel=l.querySelector('select'); if(!sel) return;
+      l.addEventListener('click',function(e){
+        if(e.target===sel) return;
+        try{ if(sel.showPicker){sel.showPicker();return} }catch(err){}
+        sel.focus();
+      });
+    });
+    var fobCtl=document.querySelector('.ctl.fob'), tipBtn=$('tipbtn');
+    function tipSet(o){fobCtl.classList.toggle('tipopen',o);tipBtn.setAttribute('aria-expanded',String(o))}
+    tipBtn.addEventListener('click',function(e){e.stopPropagation();tipSet(!fobCtl.classList.contains('tipopen'))});
+    document.addEventListener('click',function(e){if(!fobCtl.contains(e.target)) tipSet(false)});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){tipSet(false);tipBtn.blur()}});
+    $('share').addEventListener('click',copyLink);
+    $('advBtn').addEventListener('click',function(){
+      var open=$('advBtn').getAttribute('aria-expanded')==='true';
+      $('advBtn').setAttribute('aria-expanded',String(!open));
+      $('adv').hidden=open;
+    });
+    $('openDetail').addEventListener('click',function(){
+      var d=$('detail');d.open=!d.open;
+      if(d.open) d.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+    var t1=$('tab1'),t2=$('tab2');
+    function tab(a){
+      t1.setAttribute('aria-selected',String(a===1));t2.setAttribute('aria-selected',String(a===2));
+      $('pn1').hidden=(a!==1);$('pn2').hidden=(a!==2);
+      if(a===2) renderCurve();
+    }
+    t1.addEventListener('click',function(){tab(1)});
+    t2.addEventListener('click',function(){tab(2)});
+  }
+  function syncInputs(){
+    $('origin').value=S.origin;$('pt').value=S.pt;$('cond').value=S.cond;
+    $('fobr').value=Math.min(Math.max(S.fob,8000),100000);
+    $('fobn').value=S.fob;$('fr').value=S.fr;$('trm').value=S.trm;
+    $('man').value=(S.man===null?'':S.man);
+    if(S.man!==null||S.trm!==3200||S.fr!==1500){
+      $('adv').hidden=false;$('advBtn').setAttribute('aria-expanded','true');
+    }
+  }
+
+  /* ---------- result ---------- */
+  function renderResult(){
+    var o=originOf(S.origin), g=o.g, p=S.pt;
+    var c=calc(g,p,S.fob,S.fr,S.man);
+    var used=(S.cond==='used');
+
+    var st;
+    if(used) st='<span><i style="background:var(--bad)"></i><b>No autorizada.</b> Los usados no tienen licencia de importación ni se pueden matricular por primera vez.</span>';
+    else if(S.cond==='ant'||S.cond==='cla') st='<span><i style="background:var(--warn)"></i><b>Requiere licencia previa.</b> Certificación del Automóvil Club de Colombia y especificaciones originales.</span>';
+    else st='<span><i style="background:var(--ok)"></i><b>Permitido.</b> Debe ser nuevo y de año modelo vigente.</span>';
+    $('status').innerHTML=st;
+
+    $('taxTotal').textContent=usd.format(c.tax);
+    $('taxPct').textContent='en tributos, '+pc(c.burden,1)+'% del valor FOB';
+    $('landed').textContent='Puesto en Colombia: '+usd.format(c.total)+' (aprox. '+cop.format(c.total*S.trm)+'), sin gastos locales ni margen.';
+    $('dockTax').textContent=usd.format(c.tax);
+    $('dockPct').textContent='('+pc(c.burden,0)+'% del FOB)';
+
+    var orig=S.fob+S.fr, total=c.total;
+    var oPct=orig/total*100, tPct=c.tax/total*100;
+    var br='<div class="br orig" style="width:'+oPct+'%" title="Valor original: '+usd.format(orig)+'">'+(oPct>=34?'Valor original '+usd.format(orig):(oPct>=22?'Original':''))+'</div>';
+    if(c.tax>0) br+='<div class="br taxb" style="width:calc('+tPct+'% - 3px)" title="Tributos: '+usd.format(c.tax)+'">'+(tPct>=34?'Tributos '+usd.format(c.tax):(tPct>=24?'Tributos':''))+'</div>';
+    $('brackets').innerHTML=br;
+    var segs=[
+      {n:'Valor FOB',v:S.fob,c:'--fob',t:'--on-fob'},
+      {n:'Flete y seguro',v:S.fr,c:'--fl',t:'--on-fl'},
+      {n:'Arancel',v:c.arV,c:'--ar',t:'--on-ar'},
+      {n:'IVA',v:c.ivaV,c:'--iva',t:'--on-iva'},
+      {n:'Impuesto al consumo',v:c.incV,c:'--inc',t:'--on-inc'}
+    ];
+    var sh='',key='';
+    segs.forEach(function(s){
+      var w=s.v/total*100;
+      sh+='<div class="seg" style="width:'+w+'%;background:var('+s.c+');color:var('+s.t+')" title="'+s.n+': '+usd.format(s.v)+'">'+(w>=7?pc(w,0)+'%':'')+'</div>';
+      key+='<span><i style="background:var('+s.c+')"></i>'+s.n+' <b>'+usd.format(s.v)+'</b></span>';
+    });
+    $('stack').innerHTML=sh;
+    $('stack').setAttribute('aria-label','Composición del precio final: '+pc(oPct,0)+'% valor original y '+pc(tPct,0)+'% tributos');
+    $('segkey').innerHTML=key;
+    $('compcap').innerHTML='De cada USD 100 que pagas, <b>USD '+pc(oPct,0)+'</b> son el carro y el flete y <b>USD '+pc(tPct,0)+'</b> son tributos.';
+    $('figs').className='figs'+(used?' dim':'');
+    document.querySelector('.bigline').className='bigline'+(used?' dim':'');
+    $('stamp').className='stamp'+(used?' show':'');
+
+    var rows=[
+      {c:'var(--fob)',l:'Valor FOB',s:'Precio en origen',v:S.fob,st:0},
+      {c:'var(--fl)',l:'Flete y seguro',s:'Para llegar a puerto',v:S.fr,st:S.fob},
+      {c:'var(--ar)',l:'Arancel '+pc(c.r.ar,c.r.ar%1?1:0)+'%',s:'Sobre CIF',v:c.arV,st:c.cif,tax:true},
+      {c:'var(--iva)',l:'IVA '+c.r.iva+'%',s:'Sobre CIF + arancel',v:c.ivaV,st:c.cif+c.arV,tax:true},
+      {c:'var(--inc)',l:'Consumo '+c.r.inc+'%',s:'Sobre CIF + arancel',v:c.incV,st:c.cif+c.arV+c.ivaV,tax:true}
+    ];
+    var h='';
+    rows.forEach(function(r){
+      h+='<div class="wfrow"><div class="nm">'+r.l+'<small>'+r.s+'</small></div>'+
+        '<div class="track"><div class="bar" style="left:'+(r.st/total*100)+'%;width:'+(r.v/total*100)+'%;background:'+r.c+'"></div></div>'+
+        '<div class="val">'+usd.format(r.v)+(r.tax?'<small>'+pc(S.fob>0?r.v/S.fob*100:0,1)+'% del FOB</small>':'')+'</div></div>';
+    });
+    h+='<div class="wfrow total"><div class="nm">Total puesto en Colombia<small>Sin gastos locales</small></div>'+
+       '<div class="track"><div class="bar" style="left:0;width:100%;background:var(--ink)"></div></div>'+
+       '<div class="val"><b>'+usd.format(total)+'</b><small>'+cop.format(total*S.trm)+'</small></div></div>';
+    $('wf').innerHTML=h;
+
+    var notes=[];
+    if(!used&&(S.cond==='ant'||S.cond==='cla')) notes.push('Se asume el mismo esquema de impuestos que un carro nuevo.');
+    if(S.man===null){
+      if(g==='no'&&p!=='ice'&&p!=='bev') notes.push('Híbridos sin TLC: la tarifa va de 15% a 35% según la subpartida. Se usa 35%.');
+      if(g==='ace') notes.push('ACE 72: cupo de 50.000 unidades al año y 60% de integración regional. Vigencia por confirmar.');
+      if(g==='acx') notes.push('Escenario hipotético: 16,1% con 60% de integración regional y hasta 35% si no la acredita.');
+    }
+    if(p==='bev') notes.push('Impuesto al consumo de eléctricos: las fuentes divergen entre 0% y 8%. Se usa 0%.');
+    $('notes').innerHTML=notes.map(function(n){return '<li>'+n+'</li>'}).join('');
+
+    var arWhy;
+    if(S.man!==null) arWhy='Tarifa manual que ingresaste.';
+    else if(g==='tlc') arWhy='El TLC con '+o.n+' elimina el arancel de vehículos.';
+    else if(g==='ace') arWhy='Suspensión de aranceles del ACE 72 con '+o.n+', dentro del cupo y con integración regional exigida.';
+    else if(g==='acx'&&p!=='bev') arWhy='Tarifa reportada de 16,1% para carros brasileños con 60% de integración regional si el ACE 72 no se renueva.';
+    else if(p==='bev') arWhy='Los eléctricos están exentos de arancel sin importar el origen (Decreto 2051 de 2019).';
+    else if(p==='ice') arWhy='El Decreto 1432 de 2025 subió de 35% a 40% el arancel de combustión sin TLC en 13 subpartidas.';
+    else arWhy='Tarifa general del Arancel de Aduanas desde que el Decreto 1550 de 2024 eliminó el cupo de 5%. Hasta 35% según la subpartida.';
+    var ivaWhy=(c.r.iva===5)?'Tarifa diferencial de 5% para eléctricos e híbridos (art. 468-1 ET). Con certificado UPME se puede pedir la devolución del IVA pagado.':'Tarifa general de 19%. Los híbridos ligeros no acceden al beneficio.';
+    var incWhy=(p==='bev')?'Se asume 0% para eléctricos, con fuentes divergentes.':(c.r.inc===16?'16% porque el FOB es igual o mayor a USD 30.000 (art. 512-4 ET).':'8% porque el FOB es menor a USD 30.000 (art. 512-3 ET).');
+    $('why').innerHTML='<div style="border-color:var(--ar)"><b>Arancel:</b> '+arWhy+'</div>'+
+      '<div style="border-color:var(--iva)"><b>IVA:</b> '+ivaWhy+'</div>'+
+      '<div style="border-color:var(--inc)"><b>Impuesto al consumo:</b> '+incWhy+'</div>';
+    return c;
+  }
+
+  /* ---------- country comparison ---------- */
+  function renderCompare(c){
+    var used=(S.cond==='used');
+    var h='';
+    LOCAL.forEach(function(l){
+      var rate=l.tax(S.pt);
+      var local=S.fob*(1+rate/100);
+      var mult=c.total/local;
+      var diff=c.total-local;
+      var wl=local/Math.max(local,c.total)*100, wc=c.total/Math.max(local,c.total)*100;
+      var dtxt=Math.abs(diff)<local*0.02?'Cuesta casi lo mismo que allá.':(diff>0?'Pagas '+usd.format(diff)+' más (≈ '+copShort(diff*S.trm)+').':'Pagas '+usd.format(-diff)+' menos (≈ '+copShort(-diff*S.trm)+').');
+      h+='<div class="tile"><h3>Frente a '+l.n+'</h3>'+
+        '<div class="mult">×'+pc(mult,1)+'<small>veces el precio de allá</small></div>'+
+        '<div class="pair">'+
+          '<div>Allá<span class="b" style="width:'+wl+'%;background:var(--fl)"></span><b>'+usd.format(local)+'</b></div>'+
+          '<div>Aquí<span class="b" style="width:'+wc+'%;background:var(--ar)"></span><b>'+usd.format(c.total)+'</b></div>'+
+        '</div>'+
+        '<p class="diff">'+dtxt+'</p></div>';
+    });
+    var el=$('cmps');el.innerHTML=h;el.style.opacity=used?'.35':'1';
+    $('cmpnote').textContent='Ambos lados sin margen del concesionario ni gastos locales. '+LOCAL.map(function(l){return l.note}).join(' ');
+  }
+
+  /* ---------- heatmap ---------- */
+  function renderHeat(){
+    var h='<div></div>';
+    PTS.forEach(function(p){h+='<div class="hd">'+p.s+'</div>'});
+    var cur=originOf(S.origin).g;
+    GROUPS.forEach(function(g){
+      h+='<div class="rh">'+g.n+'<small>'+g.s+'</small></div>';
+      PTS.forEach(function(p){
+        var c=calc(g.id,p.id,S.fob,S.fr,null);
+        var a=Math.min(62,5+c.burden*0.62);
+        var sel=(cur===g.id&&S.pt===p.id);
+        h+='<button type="button" class="cell" data-g="'+g.id+'" data-p="'+p.id+'" aria-pressed="'+sel+'" style="background:color-mix(in srgb,var(--iva) '+a+'%,var(--surface))" title="'+g.n+', '+p.n+': '+usd.format(c.tax)+' en tributos">'+
+          '<b>'+pc(c.burden,0)+'%</b><small>'+usd.format(c.tax)+'</small></button>';
+      });
+    });
+    var el=$('heat');el.innerHTML=h;
+    Array.prototype.forEach.call(el.querySelectorAll('.cell'),function(b){
+      b.addEventListener('click',function(){
+        var gid=b.dataset.g;
+        if(originOf(S.origin).g!==gid) S.origin=ORIGINS.filter(function(o){return o.g===gid})[0].id;
+        S.pt=b.dataset.p;syncInputs();render();
+      });
+    });
+  }
+
+  /* ---------- curve ---------- */
+  function renderCurve(){
+    var el=$('curve'); if(el.offsetParent===null&&$('pn2').hidden) return;
+    var W=640,H=270,mL=44,mR=100,mT=14,mB=34,x0=8000,x1=100000,ymax=100;
+    var cur=originOf(S.origin).g;
+    function X(v){return mL+(v-x0)/(x1-x0)*(W-mL-mR)}
+    function Y(v){return mT+(1-Math.min(v,ymax)/ymax)*(H-mT-mB)}
+    var xs=[];for(var f=x0;f<=x1;f+=500)xs.push(f);xs.push(29999);xs.sort(function(a,b){return a-b});
+    function path(gid){
+      var d='';xs.forEach(function(f,i){var c=calc(gid,S.pt,f,S.fr,null);d+=(i?'L':'M')+X(f).toFixed(1)+' '+Y(c.burden).toFixed(1)});
+      return d;
+    }
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="min-width:420px" role="img" aria-label="Tributos sobre FOB según el valor del carro">';
+    for(var t=0;t<=100;t+=25){
+      svg+='<line x1="'+mL+'" x2="'+(W-mR)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="var(--line)"/>'+
+           '<text x="'+(mL-6)+'" y="'+(Y(t)+4)+'" text-anchor="end">'+t+'%</text>';
+    }
+    [20000,40000,60000,80000,100000].forEach(function(v){
+      svg+='<text x="'+X(v)+'" y="'+(H-12)+'" text-anchor="middle">'+(v/1000)+'k</text>';
+    });
+    svg+='<line x1="'+X(30000)+'" x2="'+X(30000)+'" y1="'+mT+'" y2="'+(H-mB)+'" stroke="var(--inc)" stroke-width="2" stroke-dasharray="4 4"/>'+
+         '<text x="'+(X(30000)+5)+'" y="'+(mT+11)+'">USD 30.000</text>';
+    var noC=calc('no',S.pt,x1,S.fr,null), tlcC=calc('tlc',S.pt,x1,S.fr,null);
+    svg+='<path d="'+path('no')+'" fill="none" stroke="var(--ar)" stroke-width="2.5"/>'+
+         '<path d="'+path('tlc')+'" fill="none" stroke="var(--muted)" stroke-width="2.5"/>';
+    svg+='<text x="'+(W-mR+6)+'" y="'+(Y(noC.burden)+4)+'" style="fill:var(--ar);font-weight:600">Sin TLC</text>'+
+         '<text x="'+(W-mR+6)+'" y="'+(Y(tlcC.burden)+4)+'" style="fill:var(--muted);font-weight:600">TLC o ACE 72</text>';
+    var gid=(cur==='no'||cur==='acx')?'no':'tlc';
+    var fx=Math.min(Math.max(S.fob,x0),x1);
+    var here=calc(gid,S.pt,fx,S.fr,null), hx=X(fx);
+    svg+='<line x1="'+hx+'" x2="'+hx+'" y1="'+mT+'" y2="'+(H-mB)+'" stroke="var(--ink)" stroke-width="1" opacity=".5"/>'+
+         '<circle cx="'+hx+'" cy="'+Y(here.burden)+'" r="5.5" fill="var(--ink)" stroke="var(--surface)" stroke-width="2"/>';
+    svg+='</svg>';
+    el.innerHTML=svg;
+  }
+
+  /* ---------- restrictions ---------- */
+  function renderRestrictions(){
+    var items=[
+      {id:'new',tag:'Permitido',col:'--ok',t:'Nuevo',p:'Año modelo del año de la importación o el siguiente. Pasa por VUCE, DIAN, visto bueno ambiental de la ANLA y matrícula en el RUNT.'},
+      {id:'used',tag:'Prohibido',col:'--bad',t:'Usado',p:'El Convenio de Complementación Automotor y el Decreto 925 de 2013 no permiten la licencia previa. Además, la Ley 769 de 2002 (art. 37) impide el registro inicial.'},
+      {id:'ant',tag:'Con licencia',col:'--warn',t:'Antiguo, 35 años o más',p:'Excepción para vehículos que conservan sus especificaciones originales. Exige licencia previa del MinCIT y certificación del Automóvil Club de Colombia.'},
+      {id:'cla',tag:'Con licencia',col:'--warn',t:'Clásico, 50 años o más',p:'Misma excepción, para marcas, series y modelos catalogados internacionalmente como clásicos. Mismos requisitos de licencia y certificación.'}
+    ];
+    $('condcards').innerHTML=items.map(function(i){
+      return '<div class="cond"'+(S.cond===i.id?' aria-current="true"':'')+'><span class="tag"><i style="background:var('+i.col+')"></i>'+i.tag+'</span><h3>'+i.t+'</h3><p>'+i.p+'</p></div>';
+    }).join('');
+    $('rules').innerHTML=
+      '<div class="rule"><b>Cupo de 20.000 unidades con arancel de 5%</b><span>Decreto 0595 de 2026, para eléctricos e híbridos terminados en 2026 y 2027, según la inversión certificada. Los eléctricos ya pagan 0%, así que el cupo importa sobre todo para híbridos.</span></div>'+
+      '<div class="rule"><b>Ensamble local con arancel 0%</b><span>Los kits CKD y SKD de eléctricos e híbridos para ensamblar en Colombia entran con 0% bajo el nuevo régimen.</span></div>'+
+      '<div class="rule"><b>Certificado UPME</b><span>Habilita la exclusión del IVA (por devolución) y la deducción de renta en eléctricos e híbridos completos y enchufables. Los híbridos ligeros quedan por fuera y el beneficio no se transfiere a quien compre el carro usado.</span></div>'+
+      '<div class="rule"><b>Importación temporal y cupo diplomático</b><span>Turistas hasta 9 meses y colombianos con 18 meses o más en misión diplomática, según operadores logísticos. Fuente secundaria: confirma con la DIAN y Cancillería.</span></div>';
+  }
+
+  function render(){
+    var c=renderResult();
+    renderCompare(c);renderHeat();renderCurve();renderRestrictions();
+    writeURL();
+  }
+
+  function watchDock(){
+    if(!('IntersectionObserver' in window)) return;
+    var dock=$('dock');
+    var io=new IntersectionObserver(function(es){
+      dock.className='dock'+(es[0].isIntersecting?'':' show');
+    },{threshold:0.1});
+    io.observe($('resultado'));
+  }
+
+  readURL();buildControls();syncInputs();render();watchDock();
+})();
+</script>
+</body>
+</html>

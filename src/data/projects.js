@@ -110,4 +110,13 @@ export const projects = [
     image: asset('images/projects/PasilloPublico.png'),
     category: 'web',
   },
+  {
+    id: 13,
+    name: 'Importar un carro a Colombia',
+    description: 'Simulador de aranceles, IVA e impuesto al consumo para importar un carro en 2026, con restricciones para usados y comparación con otros países.',
+    tags: ['Data Viz', 'Aduanas', 'Simulador'],
+    url: '/importarcarro/',
+    image: asset('images/projects/ImportarCarro.png'),
+    category: 'data',
+  },
 ]
