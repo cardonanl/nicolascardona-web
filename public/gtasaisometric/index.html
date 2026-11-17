@@ -15,52 +15,59 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/images/icons/gtasaisometric.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/98.css@0.1.18/dist/98.css">
 <style>
-  html, body { margin: 0; height: 100%; background: #1d3242; overflow: hidden; }
+  :root { --bg: #23394a; --panel: rgba(18, 20, 26, 0.84); --text: #eef1f5; --muted: #a9b2c0; --accent: #e8b84a; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 13px/1.4 system-ui, sans-serif; overflow: hidden; }
   #map { position: absolute; inset: 0; }
-  .window.panel { position: fixed; top: 12px; left: 12px; z-index: 10; width: 290px; }
-  .panel .window-body { margin: 6px 8px 8px; }
-  .panel p { margin: 0 0 8px; }
-  .panel .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
-  .panel .credits { color: #444; font-size: 10px; margin-top: 8px; }
-  .panel.minimized .window-body { display: none; }
-  .status-bar.coords { position: fixed; left: 12px; bottom: 12px; z-index: 10; min-width: 220px; background: silver; }
+  .panel { position: fixed; z-index: 10; background: var(--panel); border-radius: 8px; padding: 10px 12px; }
+  #info { top: 12px; left: 12px; max-width: 300px; }
+  #info b { color: var(--accent); }
+  #info .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  #toggle { font: inherit; font-size: 15px; line-height: 1; color: var(--text); background: rgba(255, 255, 255, .08);
+            border: 0; border-radius: 4px; width: 24px; height: 22px; cursor: pointer; }
+  #toggle:hover { background: rgba(255, 255, 255, .18); }
+  #info.collapsed #info-body { display: none; }
+  #info p { margin: 6px 0 0; color: var(--muted); }
+  #info .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
+  #info label { color: var(--text); cursor: pointer; user-select: none; }
+  #info .credits { font-size: 11px; }
+  #back { font: inherit; color: var(--bg); background: var(--accent); border: 0; border-radius: 5px; padding: 4px 10px;
+          cursor: pointer; text-decoration: none; white-space: nowrap; }
+  #back:hover { filter: brightness(1.1); }
+  #coords { bottom: 12px; left: 12px; font-family: ui-monospace, monospace; color: var(--muted); pointer-events: none; }
   .label { pointer-events: none; white-space: nowrap; transform: translate(-50%, -50%);
-           font: 700 15px/1 "Pixelated MS Sans Serif", Arial, sans-serif; color: #fff;
-           text-shadow: 0 0 3px #000, 0 0 8px rgba(0, 0, 0, .85); }
-  .label.region { font-size: 22px; color: #ffd75e; }
-  .hide-labels .label { display: none; }
+           font: 600 15px/1 system-ui, sans-serif; color: #fff; letter-spacing: .02em;
+           text-shadow: 0 0 3px #000, 0 0 8px rgba(0, 0, 0, .8); }
+  .label.region { font-size: 22px; color: var(--accent); }
+  /* OpenSeadragon writes display:block inline on every overlay, so hiding needs !important */
+  .hide-labels .label { display: none !important; }
   @media (max-width: 600px) {
-    .window.panel { width: calc(100% - 24px); }
-    .status-bar.coords { display: none; }
+    #info { max-width: none; right: 12px; }
+    #info .credits, #coords { display: none; }
   }
 </style>
 </head>
 <body>
 <div id="map"></div>
 
-<div class="window panel" id="panel">
-  <div class="title-bar">
-    <div class="title-bar-text">C:\Games\GTA_SA\isometric.exe</div>
-    <div class="title-bar-controls">
-      <button aria-label="Minimize" id="minimize"></button>
-      <button aria-label="Close" onclick="location.href='/'"></button>
-    </div>
+<div id="info" class="panel">
+  <div class="head">
+    <span><b>San Andreas</b> &middot; isometric</span>
+    <button id="toggle" aria-expanded="true" aria-controls="info-body" title="Collapse">&minus;</button>
   </div>
-  <div class="window-body">
-    <p><b>San Andreas, isometric.</b> The whole map of GTA San Andreas rendered as one picture
-      (34,816 × 19,456 px) from the original PC game files. Scroll to zoom, drag to move.</p>
-    <div class="row">
-      <input type="checkbox" id="labels" checked><label for="labels">District labels</label>
-      <button onclick="location.href='/'">Back to desktop</button>
-    </div>
-    <p class="credits">38,892 objects placed from the game's IPL/IDE data, imported with DragonFF and
-      rendered in Blender (Eevee, orthographic 2:1 camera). GTA San Andreas © Rockstar Games — fan project,
-      not affiliated.</p>
+  <div id="info-body">
+  <p>The whole map of GTA San Andreas rendered as one picture (34,816 &times; 19,456 px) from the original
+    PC game files. Scroll to zoom, drag to move.</p>
+  <div class="row">
+    <label><input type="checkbox" id="labels" checked> District labels</label>
+    <a id="back" href="/">&larr; Back to desktop</a>
+  </div>
+  <p class="credits">38,892 objects placed from the game's IPL/IDE data, imported with DragonFF and rendered
+    in Blender (Eevee, orthographic 2:1 camera). GTA San Andreas &copy; Rockstar Games &mdash; fan project,
+    not affiliated.</p>
   </div>
 </div>
-<div class="status-bar coords"><p class="status-bar-field" id="coords">Move the mouse over the map</p></div>
+<div id="coords" class="panel">Move the mouse over the map</div>
 
 <script src="https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/openseadragon.min.js"></script>
 <script>
@@ -81,8 +88,21 @@ const RIGHT = [Math.cos(rad(45)), Math.sin(rad(45)), 0];
 const UP = [-Math.sin(rad(45)) * Math.cos(rad(60)), Math.cos(rad(45)) * Math.cos(rad(60)), Math.sin(rad(60))];
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 
-document.getElementById("minimize").onclick = () => document.getElementById("panel").classList.toggle("minimized");
 document.getElementById("labels").onchange = (e) => document.body.classList.toggle("hide-labels", !e.target.checked);
+
+// Collapsible info panel; the choice is remembered per browser (starts collapsed on phones)
+const info = document.getElementById("info"), toggle = document.getElementById("toggle");
+function setCollapsed(collapsed) {
+  info.classList.toggle("collapsed", collapsed);
+  toggle.textContent = collapsed ? "+" : "−";
+  toggle.title = collapsed ? "Expand" : "Collapse";
+  toggle.setAttribute("aria-expanded", String(!collapsed));
+  try { localStorage.setItem("gtasa-panel-collapsed", collapsed ? "1" : "0"); } catch (e) {}
+}
+let saved = null;
+try { saved = localStorage.getItem("gtasa-panel-collapsed"); } catch (e) {}
+setCollapsed(saved === null ? matchMedia("(max-width: 600px)").matches : saved === "1");
+toggle.onclick = () => setCollapsed(!info.classList.contains("collapsed"));
 
 fetch("meta.json").then((r) => r.json()).then((m) => {
   const [u0, v1] = m.origin_uv;
