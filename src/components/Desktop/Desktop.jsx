@@ -23,6 +23,7 @@ const ICONS = {
   calandracos: asset('images/icons/calandracos.png'),
   presupuesto: 'https://win98icons.alexmeub.com/icons/png/calculator-0.png',
   pasillo:     'https://win98icons.alexmeub.com/icons/png/paint_file-5.png',
+  gtasa:       asset('images/icons/gtasaisometric.png'),
 }
 
 export default function Desktop() {
@@ -60,6 +61,7 @@ export default function Desktop() {
         <DesktopIcon label="Calandracos" icon={ICONS.calandracos} href="https://calandracos.nicolascardona.com/" external />
         <DesktopIcon label="Presupuesto 2027" icon={ICONS.presupuesto} href="https://presupuesto2027.nicolascardona.com/" external />
         <DesktopIcon label="Pasillo Público" icon={ICONS.pasillo} href="https://pasillopublico.com/" external />
+        <DesktopIcon label="San Andreas Isometric" icon={ICONS.gtasa} href={asset('gtasaisometric/')} />
       </div>
 
       <Window {...makeWindowProps('about')} title="Welcome — Nicolas Cardona" icon={ICONS.about} width={520}>
