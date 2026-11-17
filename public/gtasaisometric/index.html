@@ -34,6 +34,8 @@
   #back { font: inherit; color: var(--bg); background: var(--accent); border: 0; border-radius: 5px; padding: 4px 10px;
           cursor: pointer; text-decoration: none; white-space: nowrap; }
   #back:hover { filter: brightness(1.1); }
+  #download { color: var(--accent); text-decoration: none; }
+  #download:hover { text-decoration: underline; }
   #coords { bottom: 12px; left: 12px; font-family: ui-monospace, monospace; color: var(--muted); pointer-events: none; }
   .label { pointer-events: none; white-space: nowrap; transform: translate(-50%, -50%);
            font: 600 15px/1 system-ui, sans-serif; color: #fff; letter-spacing: .02em;
@@ -62,6 +64,8 @@
     <label><input type="checkbox" id="labels" checked> District labels</label>
     <a id="back" href="/">&larr; Back to desktop</a>
   </div>
+  <p><a id="download" href="https://github.com/cardonanl/nicolascardona-web/releases/tag/gtasa-isometric-v1"
+        target="_blank" rel="noopener noreferrer">&#11015; Download the full image</a> (JPG, 91 MB, 677 megapixels)</p>
   <p class="credits">38,892 objects placed from the game's IPL/IDE data, imported with DragonFF and rendered
     in Blender (Eevee, orthographic 2:1 camera). GTA San Andreas &copy; Rockstar Games &mdash; fan project,
     not affiliated.</p>
