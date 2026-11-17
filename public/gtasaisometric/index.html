@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>San Andreas Isometric — Nicolas Cardona</title>
+<meta name="description" content="An explorable isometric map of GTA San Andreas, rendered from the original PC game files with Blender: 38,892 objects, 34,816 × 19,456 pixels.">
+<link rel="canonical" href="https://nicolascardona.com/gtasaisometric/">
+<meta property="og:url" content="https://nicolascardona.com/gtasaisometric/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="San Andreas Isometric">
+<meta property="og:description" content="The whole map of GTA San Andreas as one explorable isometric render.">
+<meta property="og:image" content="https://nicolascardona.com/gtasaisometric/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/images/icons/gtasaisometric.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/98.css@0.1.18/dist/98.css">
+<style>
+  html, body { margin: 0; height: 100%; background: #1d3242; overflow: hidden; }
+  #map { position: absolute; inset: 0; }
+  .window.panel { position: fixed; top: 12px; left: 12px; z-index: 10; width: 290px; }
+  .panel .window-body { margin: 6px 8px 8px; }
+  .panel p { margin: 0 0 8px; }
+  .panel .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+  .panel .credits { color: #444; font-size: 10px; margin-top: 8px; }
+  .panel.minimized .window-body { display: none; }
+  .status-bar.coords { position: fixed; left: 12px; bottom: 12px; z-index: 10; min-width: 220px; background: silver; }
+  .label { pointer-events: none; white-space: nowrap; transform: translate(-50%, -50%);
+           font: 700 15px/1 "Pixelated MS Sans Serif", Arial, sans-serif; color: #fff;
+           text-shadow: 0 0 3px #000, 0 0 8px rgba(0, 0, 0, .85); }
+  .label.region { font-size: 22px; color: #ffd75e; }
+  .hide-labels .label { display: none; }
+  @media (max-width: 600px) {
+    .window.panel { width: calc(100% - 24px); }
+    .status-bar.coords { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div class="window panel" id="panel">
+  <div class="title-bar">
+    <div class="title-bar-text">C:\Games\GTA_SA\isometric.exe</div>
+    <div class="title-bar-controls">
+      <button aria-label="Minimize" id="minimize"></button>
+      <button aria-label="Close" onclick="location.href='/'"></button>
+    </div>
+  </div>
+  <div class="window-body">
+    <p><b>San Andreas, isometric.</b> The whole map of GTA San Andreas rendered as one picture
+      (34,816 × 19,456 px) from the original PC game files. Scroll to zoom, drag to move.</p>
+    <div class="row">
+      <input type="checkbox" id="labels" checked><label for="labels">District labels</label>
+      <button onclick="location.href='/'">Back to desktop</button>
+    </div>
+    <p class="credits">38,892 objects placed from the game's IPL/IDE data, imported with DragonFF and
+      rendered in Blender (Eevee, orthographic 2:1 camera). GTA San Andreas © Rockstar Games — fan project,
+      not affiliated.</p>
+  </div>
+</div>
+<div class="status-bar coords"><p class="status-bar-field" id="coords">Move the mouse over the map</p></div>
+
+<script src="https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/openseadragon.min.js"></script>
+<script>
+// Labels in GTA world coordinates (x, y), approximate district centres.
+const LABELS = [
+  ["Los Santos", 1600, -1500, "region"], ["San Fierro", -2100, 400, "region"], ["Las Venturas", 2000, 1600, "region"],
+  ["Grove Street", 2495, -1680], ["Downtown LS", 1500, -1300], ["Vinewood", 1000, -1000],
+  ["Santa Maria Beach", 370, -1850], ["LS Airport", 1680, -2400], ["Ocean Docks", 2500, -2400],
+  ["Monumento a la Resistencia", 1932, -1810], ["Downtown SF", -1850, 750], ["Doherty", -2050, 150],
+  ["SF Airport", -1400, -300], ["Mount Chiliad", -2321, -1637], ["Angel Pine", -2150, -2400],
+  ["The Strip", 2030, 1300], ["LV Airport", 1550, 1500], ["Area 69", 220, 1900],
+  ["Fort Carson", -150, 1100], ["Bayside", -2500, 2300], ["Palomino Creek", 2300, 50],
+];
+
+// Isometric projection used by the renderer: Euler XYZ (60, 0, 45) degrees, orthographic.
+const rad = (d) => d * Math.PI / 180;
+const RIGHT = [Math.cos(rad(45)), Math.sin(rad(45)), 0];
+const UP = [-Math.sin(rad(45)) * Math.cos(rad(60)), Math.cos(rad(45)) * Math.cos(rad(60)), Math.sin(rad(60))];
+const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+
+document.getElementById("minimize").onclick = () => document.getElementById("panel").classList.toggle("minimized");
+document.getElementById("labels").onchange = (e) => document.body.classList.toggle("hide-labels", !e.target.checked);
+
+fetch("meta.json").then((r) => r.json()).then((m) => {
+  const [u0, v1] = m.origin_uv;
+  const W = m.image_px[0];
+
+  OpenSeadragon.setImageFormatsSupported({ webp: true });  // pyramid tiles are WebP (OpenSeadragon 4 needs this)
+  const viewer = OpenSeadragon({
+    id: "map", tileSources: "map.dzi",
+    prefixUrl: "https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/images/",
+    showNavigationControl: false, showNavigator: true, navigatorPosition: "BOTTOM_RIGHT",
+    maxZoomPixelRatio: 2, minZoomImageRatio: 0.6, visibilityRatio: 0.3,
+    gestureSettingsMouse: { clickToZoom: false },
+  });
+
+  viewer.addHandler("open", () => {
+    for (const [name, x, y, kind] of LABELS) {
+      const el = document.createElement("div");
+      el.className = "label" + (kind ? " " + kind : "");
+      el.textContent = name;
+      const px = (dot([x, y, 0], RIGHT) - u0) * m.ppu, py = (v1 - dot([x, y, 0], UP)) * m.ppu;
+      viewer.addOverlay({ element: el, location: new OpenSeadragon.Point(px / W, py / W), placement: "CENTER" });
+    }
+  });
+
+  // Ground-level game coordinates under the mouse (inverse projection at z = 0)
+  const coords = document.getElementById("coords");
+  const det = RIGHT[0] * UP[1] - RIGHT[1] * UP[0];
+  new OpenSeadragon.MouseTracker({ element: viewer.element, moveHandler: (e) => {
+    const p = viewer.viewport.viewerElementToImageCoordinates(e.position);
+    const u = p.x / m.ppu + u0, v = v1 - p.y / m.ppu;
+    const x = (u * UP[1] - v * RIGHT[1]) / det, y = (v * RIGHT[0] - u * UP[0]) / det;
+    coords.textContent = `X ${x.toFixed(0)}   Y ${y.toFixed(0)}`;
+  } });
+});
+</script>
+</body>
+</html>
