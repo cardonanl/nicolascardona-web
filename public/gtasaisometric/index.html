@@ -43,7 +43,13 @@
   .label.region { font-size: 22px; color: var(--accent); }
   /* OpenSeadragon writes display:block inline on every overlay, so hiding needs !important */
   .hide-labels .label { display: none !important; }
+  #rotate { top: 12px; right: 12px; display: flex; align-items: center; gap: 6px; padding: 6px 8px; }
+  #rotate button { font: inherit; font-size: 18px; line-height: 1; color: var(--text); background: rgba(255, 255, 255, .08);
+                   border: 0; border-radius: 5px; width: 34px; height: 30px; cursor: pointer; }
+  #rotate button:hover { background: rgba(255, 255, 255, .18); }
+  #view-name { min-width: 36px; text-align: center; font-family: ui-monospace, monospace; color: var(--accent); }
   @media (max-width: 600px) {
+    #rotate { top: auto; bottom: 12px; right: auto; left: 12px; }
     #info { max-width: none; right: 12px; }
     #info .credits, #coords { display: none; }
   }
@@ -59,7 +65,7 @@
   </div>
   <div id="info-body">
   <p>The whole map of GTA San Andreas rendered as one picture (34,816 &times; 19,456 px) from the original
-    PC game files. Scroll to zoom, drag to move.</p>
+    PC game files. Scroll to zoom, drag to move, and turn the map from four angles with &#10226; &#10227; (or Q / E).</p>
   <div class="row">
     <label><input type="checkbox" id="labels" checked> District labels</label>
     <a id="back" href="/">&larr; Back to desktop</a>
@@ -72,6 +78,11 @@
   </div>
 </div>
 <div id="coords" class="panel">Move the mouse over the map</div>
+<div id="rotate" class="panel">
+  <button id="rot-left" title="Rotate left (Q)" aria-label="Rotate the map left">&#10226;</button>
+  <span id="view-name" title="Camera azimuth">45°</span>
+  <button id="rot-right" title="Rotate right (E)" aria-label="Rotate the map right">&#10227;</button>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/openseadragon.min.js"></script>
 <script>
@@ -80,17 +91,35 @@ const LABELS = [
   ["Los Santos", 1600, -1500, "region"], ["San Fierro", -2100, 400, "region"], ["Las Venturas", 2000, 1600, "region"],
   ["Grove Street", 2495, -1680], ["Downtown LS", 1500, -1300], ["Vinewood", 1000, -1000],
   ["Santa Maria Beach", 370, -1850], ["LS Airport", 1680, -2400], ["Ocean Docks", 2500, -2400],
-  ["Monumento a la Resistencia", 1932, -1810], ["Downtown SF", -1850, 750], ["Doherty", -2050, 150],
+  ["Downtown SF", -1850, 750], ["Doherty", -2050, 150],
   ["SF Airport", -1400, -300], ["Mount Chiliad", -2321, -1637], ["Angel Pine", -2150, -2400],
   ["The Strip", 2030, 1300], ["LV Airport", 1550, 1500], ["Area 69", 220, 1900],
   ["Fort Carson", -150, 1100], ["Bayside", -2500, 2300], ["Palomino Creek", 2300, 50],
 ];
 
-// Isometric projection used by the renderer: Euler XYZ (60, 0, 45) degrees, orthographic.
+// The map is rendered from four camera azimuths; each view is its own pyramid with its own meta.json.
+const VIEWS = [
+  { az: 45, base: "" }, { az: 135, base: "az135/" }, { az: 225, base: "az225/" }, { az: 315, base: "az315/" },
+];
+
+// Isometric projection used by the renderer: orthographic camera at Euler XYZ (60, 0, azimuth) degrees.
 const rad = (d) => d * Math.PI / 180;
-const RIGHT = [Math.cos(rad(45)), Math.sin(rad(45)), 0];
-const UP = [-Math.sin(rad(45)) * Math.cos(rad(60)), Math.cos(rad(45)) * Math.cos(rad(60)), Math.sin(rad(60))];
-const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+function projection(m) {
+  const az = rad(m.camera_rotation_deg[2]), tilt = rad(m.camera_rotation_deg[0]);
+  const right = [Math.cos(az), Math.sin(az), 0];
+  const up = [-Math.sin(az) * Math.cos(tilt), Math.cos(az) * Math.cos(tilt), Math.sin(tilt)];
+  const [u0, v1] = m.origin_uv, W = m.image_px[0], det = right[0] * up[1] - right[1] * up[0];
+  return {
+    // world (x, y) at ground level -> image pixels
+    toImage: (x, y) => [((x * right[0] + y * right[1]) - u0) * m.ppu, (v1 - (x * up[0] + y * up[1])) * m.ppu],
+    // image pixels -> world (x, y) at ground level
+    toWorld: (px, py) => {
+      const u = px / m.ppu + u0, v = v1 - py / m.ppu;
+      return [(u * up[1] - v * right[1]) / det, (v * right[0] - u * up[0]) / det];
+    },
+    W,
+  };
+}
 
 document.getElementById("labels").onchange = (e) => document.body.classList.toggle("hide-labels", !e.target.checked);
 
@@ -108,39 +137,80 @@ try { saved = localStorage.getItem("gtasa-panel-collapsed"); } catch (e) {}
 setCollapsed(saved === null ? matchMedia("(max-width: 600px)").matches : saved === "1");
 toggle.onclick = () => setCollapsed(!info.classList.contains("collapsed"));
 
-fetch("meta.json").then((r) => r.json()).then((m) => {
-  const [u0, v1] = m.origin_uv;
-  const W = m.image_px[0];
-
-  OpenSeadragon.setImageFormatsSupported({ webp: true });  // pyramid tiles are WebP (OpenSeadragon 4 needs this)
-  const viewer = OpenSeadragon({
-    id: "map", tileSources: "map.dzi",
-    prefixUrl: "https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/images/",
-    showNavigationControl: false, showNavigator: true, navigatorPosition: "BOTTOM_RIGHT",
-    maxZoomPixelRatio: 2, minZoomImageRatio: 0.6, visibilityRatio: 0.3,
-    gestureSettingsMouse: { clickToZoom: false },
-  });
-
-  viewer.addHandler("open", () => {
-    for (const [name, x, y, kind] of LABELS) {
-      const el = document.createElement("div");
-      el.className = "label" + (kind ? " " + kind : "");
-      el.textContent = name;
-      const px = (dot([x, y, 0], RIGHT) - u0) * m.ppu, py = (v1 - dot([x, y, 0], UP)) * m.ppu;
-      viewer.addOverlay({ element: el, location: new OpenSeadragon.Point(px / W, py / W), placement: "CENTER" });
-    }
-  });
-
-  // Ground-level game coordinates under the mouse (inverse projection at z = 0)
-  const coords = document.getElementById("coords");
-  const det = RIGHT[0] * UP[1] - RIGHT[1] * UP[0];
-  new OpenSeadragon.MouseTracker({ element: viewer.element, moveHandler: (e) => {
-    const p = viewer.viewport.viewerElementToImageCoordinates(e.position);
-    const u = p.x / m.ppu + u0, v = v1 - p.y / m.ppu;
-    const x = (u * UP[1] - v * RIGHT[1]) / det, y = (v * RIGHT[0] - u * UP[0]) / det;
-    coords.textContent = `X ${x.toFixed(0)}   Y ${y.toFixed(0)}`;
-  } });
+OpenSeadragon.setImageFormatsSupported({ webp: true });  // pyramid tiles are WebP (OpenSeadragon 4 needs this)
+const viewer = OpenSeadragon({
+  id: "map",
+  prefixUrl: "https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/images/",
+  showNavigationControl: false, showNavigator: true, navigatorPosition: "BOTTOM_RIGHT",
+  maxZoomPixelRatio: 2, minZoomImageRatio: 0.6, visibilityRatio: 0.3,
+  gestureSettingsMouse: { clickToZoom: false },
 });
+
+const metas = {};  // view index -> meta.json, fetched on first use
+let current = null, proj = null, pending = null, busy = false;
+const viewName = document.getElementById("view-name");
+
+function loadMeta(i) {
+  if (!metas[i]) metas[i] = fetch(VIEWS[i].base + "meta.json").then((r) => r.json());
+  return metas[i];
+}
+
+// Switch to view i; keep the same ground point in the centre of the screen and the same zoom.
+async function showView(i) {
+  if (busy || i === current) return;
+  busy = true;
+  const m = await loadMeta(i);
+  if (proj) {
+    const c = viewer.viewport.getCenter(true);
+    const [x, y] = proj.toWorld(c.x * proj.W, c.y * proj.W);
+    pending = { x, y, zoom: viewer.viewport.getZoom(true) };
+  }
+  current = i;
+  proj = projection(m);
+  viewName.textContent = `${VIEWS[i].az}°`;
+  try { history.replaceState(null, "", i ? `#view=${VIEWS[i].az}` : location.pathname); } catch (e) {}
+  viewer.open(VIEWS[i].base + "map.dzi");
+}
+
+viewer.addHandler("open", () => {
+  for (const [name, x, y, kind] of LABELS) {
+    const el = document.createElement("div");
+    el.className = "label" + (kind ? " " + kind : "");
+    el.textContent = name;
+    const [px, py] = proj.toImage(x, y);
+    viewer.addOverlay({ element: el, location: new OpenSeadragon.Point(px / proj.W, py / proj.W), placement: "CENTER" });
+  }
+  if (pending) {
+    const [px, py] = proj.toImage(pending.x, pending.y);
+    viewer.viewport.zoomTo(pending.zoom, null, true);
+    viewer.viewport.panTo(new OpenSeadragon.Point(px / proj.W, py / proj.W), true);
+    pending = null;
+  }
+  busy = false;
+});
+viewer.addHandler("open-failed", () => { busy = false; });
+
+// ⟲ / ⟳ turn the map a quarter turn; Q / E on the keyboard do the same
+const turn = (step) => showView(((current ?? 0) + step + VIEWS.length) % VIEWS.length);
+document.getElementById("rot-left").onclick = () => turn(-1);
+document.getElementById("rot-right").onclick = () => turn(1);
+addEventListener("keydown", (e) => {
+  if (e.target.closest && e.target.closest("input, textarea")) return;
+  if (e.key === "q" || e.key === "Q") turn(-1);
+  if (e.key === "e" || e.key === "E") turn(1);
+});
+
+const fromHash = VIEWS.findIndex((v) => location.hash === `#view=${v.az}`);
+showView(fromHash > 0 ? fromHash : 0);
+
+// Ground-level game coordinates under the mouse (inverse projection at z = 0)
+const coords = document.getElementById("coords");
+new OpenSeadragon.MouseTracker({ element: viewer.element, moveHandler: (e) => {
+  if (!proj) return;
+  const p = viewer.viewport.viewerElementToImageCoordinates(e.position);
+  const [x, y] = proj.toWorld(p.x, p.y);
+  coords.textContent = `X ${x.toFixed(0)}   Y ${y.toFixed(0)}`;
+} });
 </script>
 </body>
 </html>
